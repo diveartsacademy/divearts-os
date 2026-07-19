@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script>
+/* __osGateInjected */
+/* DiveArts OS - login gate (blocks UI + suppresses data calls until unlocked; password stored as SHA-256 hash only) */
+(function(){
+  var KEYHASH='899dff68654f1b71b8ce8dd99da6432b0ff7712c1ef93f06882cd39c66e12bcc';
+  var WH='9121dpkpp16paxpcfpr7olc5p1pxe3sh';
+  function authed(){try{return sessionStorage.getItem('os_auth')==='1';}catch(e){return false;}}
+  var _f=window.fetch;
+  window.fetch=function(u,o){try{if(String(u).indexOf(WH)>=0&&!authed()){return Promise.resolve(new Response('{"conversations":[],"enabled":true}',{status:200,headers:{'Content-Type':'application/json'}}));}}catch(e){}return _f.apply(this,arguments);};
+  function sha(s){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return x.toString(16).padStart(2,'0');}).join('');});}
+  function gate(){
+    if(authed()){var g=document.getElementById('os-gate');if(g)g.remove();return;}
+    if(document.getElementById('os-gate'))return;
+    var ov=document.createElement('div');ov.id='os-gate';
+    ov.style.cssText='position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483600;background:#0C2A3A;display:flex;align-items:center;justify-content:center;font-family:Lato,-apple-system,sans-serif';
+    ov.innerHTML='<div style="background:#F6F1E7;border-radius:16px;padding:30px 34px;width:330px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.45)"><div style="width:44px;height:44px;border-radius:11px;background:#0C2A3A;color:#C79A3B;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-family:Georgia,serif">D</div><div style="font-family:Georgia,serif;font-size:21px;font-weight:700;color:#0C2A3A">DiveArts OS</div><div style="font-size:12.5px;color:#6E7B82;margin:6px 0 18px">Enter your password to open the Command Center</div><input id="os-gate-pw" type="password" placeholder="Password" autocomplete="off" style="width:100%;box-sizing:border-box;border:1px solid #C9BE9E;border-radius:10px;padding:11px 13px;font-size:15px;background:#fff;color:#0C2A3A"><div id="os-gate-err" style="font-size:12px;color:#8A2E2E;height:15px;margin-top:6px"></div><button id="os-gate-go" style="width:100%;margin-top:6px;background:#0C2A3A;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:800;font-size:15px;cursor:pointer">Unlock</button></div>';
+    document.documentElement.appendChild(ov);
+    var pw=ov.querySelector('#os-gate-pw'),err=ov.querySelector('#os-gate-err');
+    function go(){sha(pw.value||'').then(function(h){if(h===KEYHASH){try{sessionStorage.setItem('os_auth','1');}catch(e){}location.reload();}else{err.textContent='Wrong password';pw.value='';}});}
+    ov.querySelector('#os-gate-go').onclick=go;
+    pw.addEventListener('keydown',function(e){if(e.key==='Enter')go();});
+    setTimeout(function(){pw.focus();},50);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',gate);else gate();
+  setInterval(gate,700);
+})();
+
+</script>
+
   <meta charset="utf-8">
   <title>Bundled Page</title>
   <style>
