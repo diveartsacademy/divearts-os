@@ -5,11 +5,12 @@
 /* __osGateInjected */
 /* DiveArts OS - login gate (blocks UI + suppresses data calls until unlocked; password stored as SHA-256 hash only) */
 (function(){
-  var KEYHASH='bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a';
+  var KEYHASH='a2b0d646e7bcb880c82ac581fc2c6cc7796819bbb4b4fab305e8339bcf115331';
   var WH='9121dpkpp16paxpcfpr7olc5p1pxe3sh';
+  var WH2='qlrpfzlldecnbompqosbeb3xaadv9cag';
   function authed(){try{return sessionStorage.getItem('os_auth')==='1';}catch(e){return false;}}
   var _f=window.fetch;
-  window.fetch=function(u,o){try{if(String(u).indexOf(WH)>=0&&!authed()){return Promise.resolve(new Response('{"conversations":[],"enabled":true}',{status:200,headers:{'Content-Type':'application/json'}}));}}catch(e){}return _f.apply(this,arguments);};
+  window.fetch=function(u,o){try{var us=String(u);var hit=us.indexOf(WH)>=0||us.indexOf(WH2)>=0;if(hit){if(!authed()){return Promise.resolve(new Response(us.indexOf(WH2)>=0?'[]':'{"conversations":[],"enabled":true}',{status:200,headers:{'Content-Type':'application/json'}}));}var k='';try{k=sessionStorage.getItem('os_key')||'';}catch(e){}if(k){if(o&&o.body&&typeof o.body==='string'){try{var b=JSON.parse(o.body);b.key=k;o=Object.assign({},o,{body:JSON.stringify(b)});}catch(e){}}u=us+(us.indexOf('?')>=0?'&':'?')+'key='+encodeURIComponent(k);}}}catch(e){}return _f.call(this,u,o);};
   function sha(s){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return x.toString(16).padStart(2,'0');}).join('');});}
   function gate(){
     if(authed()){var g=document.getElementById('os-gate');if(g)g.remove();return;}
@@ -19,7 +20,7 @@
     ov.innerHTML='<div style="background:#F6F1E7;border-radius:16px;padding:30px 34px;width:330px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.45)"><div style="width:44px;height:44px;border-radius:11px;background:#0C2A3A;color:#C79A3B;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-family:Georgia,serif">D</div><div style="font-family:Georgia,serif;font-size:21px;font-weight:700;color:#0C2A3A">DiveArts OS</div><div style="font-size:12.5px;color:#6E7B82;margin:6px 0 18px">Enter your password to open the Command Center</div><input id="os-gate-pw" type="password" placeholder="Password" autocomplete="off" style="width:100%;box-sizing:border-box;border:1px solid #C9BE9E;border-radius:10px;padding:11px 13px;font-size:15px;background:#fff;color:#0C2A3A"><div id="os-gate-err" style="font-size:12px;color:#8A2E2E;height:15px;margin-top:6px"></div><button id="os-gate-go" style="width:100%;margin-top:6px;background:#0C2A3A;color:#fff;border:none;border-radius:10px;padding:12px;font-weight:800;font-size:15px;cursor:pointer">Unlock</button></div>';
     document.documentElement.appendChild(ov);
     var pw=ov.querySelector('#os-gate-pw'),err=ov.querySelector('#os-gate-err');
-    function go(){sha(pw.value||'').then(function(h){if(h===KEYHASH){try{sessionStorage.setItem('os_auth','1');}catch(e){}location.reload();}else{err.textContent='Wrong password';pw.value='';}});}
+    function go(){var v=pw.value||'';sha(v).then(function(h){if(h===KEYHASH){try{sessionStorage.setItem('os_auth','1');sessionStorage.setItem('os_key',v);}catch(e){}location.reload();}else{err.textContent='Wrong password';pw.value='';}});}
     ov.querySelector('#os-gate-go').onclick=go;
     pw.addEventListener('keydown',function(e){if(e.key==='Enter')go();});
     setTimeout(function(){pw.focus();},50);
@@ -798,6 +799,7 @@ window.__dcPushChange = function(pc){
       var md=(d&&d[0]&&d[0].content)||'';var upd=(d&&d[0]&&d[0].updated_at)||'';
       if(!md||md.indexOf('|')<0){root.innerHTML='<div class="load">The dashboard is still syncing from your tracker — it fills in automatically within a few minutes. Tap <b>Reload</b> shortly.</div>';document.getElementById('obsy').textContent='Waiting for first sync';return;}
       render(parse(md));
+      try{if(upd&&(Date.now()-new Date(upd).getTime())>6*3600*1000){var w=document.createElement('div');w.style.cssText='background:#FBF3E4;border:1px solid #E0C98F;color:#7A5B14;border-radius:11px;padding:11px 14px;margin-bottom:14px;font-size:13px;font-weight:700';w.textContent='\u26A0 This data was last synced '+new Date(upd).toLocaleString()+' \u2014 it may be out of date. Tap Reload, or ask Claude to sync the tracker now.';root.insertBefore(w,root.firstChild);}}catch(e){}
       document.getElementById('obsy').textContent='Synced from tracker'+(upd?(' · '+new Date(upd).toLocaleString()):'')+' · refreshes every few hours';
     }).catch(function(e){root.innerHTML='<div class="load">Could not reach the feed. Tap Reload. ('+(e&&e.message||e)+')</div>';document.getElementById('obsy').textContent='Offline';});}
   function ensureOv(){if(!document.body.contains(ov))document.body.appendChild(ov);if(!document.head.contains(st))document.head.appendChild(st);}function openOv(){ensureOv();ov.style.display='flex';load();}
