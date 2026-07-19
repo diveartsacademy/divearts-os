@@ -575,7 +575,7 @@ window.__dcPushChange = function(pc){
   function anylink(){ formView('Send a link',['Label (optional, e.g. Booking form)','Paste link'],function(){var u=document.getElementById('osf-1').value.trim();if(!u)return null;var l=document.getElementById('osf-0').value.trim();return l?(l+'\n'+u):u;}); }
   function reposPanel(){var ta=nativeTA();if(!ta)return;var r=ta.getBoundingClientRect();panel.style.left=Math.max(10,Math.min(r.right-360,window.innerWidth-370))+'px';panel.style.top='auto';panel.style.bottom=(window.innerHeight-(r.top-6))+'px';}
   btn.onclick=function(){if(panel.style.display==='block'){panel.style.display='none';return;}panel.style.display='block';menu();};
-  function place(){var ta=nativeTA();if(ta){var r=ta.getBoundingClientRect();if(r.width>40&&r.bottom>50&&r.top<window.innerHeight-6){btn.style.display='block';var bw=btn.offsetWidth||64;btn.style.left=Math.max(8,r.right-bw-6)+'px';btn.style.top=(r.top-30)+'px';if(panel.style.display==='block')reposPanel();return;}}btn.style.display='none';panel.style.display='none';}
+  function place(){if(!document.body.contains(btn))document.body.appendChild(btn);if(!document.body.contains(panel))document.body.appendChild(panel);var ta=nativeTA();if(ta){var r=ta.getBoundingClientRect();if(r.width>40&&r.bottom>50&&r.top<window.innerHeight-6){btn.style.display='block';var bw=btn.offsetWidth||64;btn.style.left=Math.max(8,r.right-bw-6)+'px';btn.style.top=(r.top-30)+'px';if(panel.style.display==='block')reposPanel();return;}}btn.style.display='none';}
   place();setInterval(place,600);window.addEventListener('scroll',place,true);window.addEventListener('resize',place);
 })();
 
