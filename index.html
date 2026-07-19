@@ -702,5 +702,19 @@ window.__dcPushChange = function(pc){
   place();setInterval(place,600);window.addEventListener('scroll',place,true);window.addEventListener('resize',place);
 })();
 </script>
+<script>
+/* DiveArts OS - Business Development launcher chip (self-remounting) */
+(function(){
+  if(window.__osBD)return; window.__osBD=1;
+  var SHEET='https://docs.google.com/spreadsheets/d/1wv4C4KymdZBfQCDfj3H0Lgg44T2GUy1mj5HaaXnNHAw/edit';
+  var b=document.createElement('button');b.id='os-bd-chip';b.innerHTML='&#128200; Business Development';
+  b.title='Open the Sea Diva Outreach Tracker (Business Development)';
+  b.style.cssText='position:fixed;right:18px;bottom:74px;z-index:2147482900;background:#0C2A3A;color:#EFE8DA;border:1px solid #C79A3B;border-radius:22px;padding:9px 15px;font:800 12.5px Lato,-apple-system,sans-serif;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.28);display:flex;align-items:center;gap:6px';
+  b.onmouseover=function(){b.style.background='#123648';};b.onmouseout=function(){b.style.background='#0C2A3A';};
+  b.onclick=function(){window.open(SHEET,'_blank','noopener');};
+  function place(){if(!document.body.contains(b))document.body.appendChild(b);}
+  place();setInterval(place,800);
+})();
+</script>
 </body>
 </html>
