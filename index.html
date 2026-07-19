@@ -5,7 +5,7 @@
 /* __osGateInjected */
 /* DiveArts OS - login gate (blocks UI + suppresses data calls until unlocked; password stored as SHA-256 hash only) */
 (function(){
-  var KEYHASH='899dff68654f1b71b8ce8dd99da6432b0ff7712c1ef93f06882cd39c66e12bcc';
+  var KEYHASH='bcb15f821479b4d5772bd0ca866c00ad5f926e3580720659cc80d39c9d09802a';
   var WH='9121dpkpp16paxpcfpr7olc5p1pxe3sh';
   function authed(){try{return sessionStorage.getItem('os_auth')==='1';}catch(e){return false;}}
   var _f=window.fetch;
