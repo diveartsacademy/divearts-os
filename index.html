@@ -806,7 +806,7 @@ window.__dcPushChange = function(pc){
     var links=[].slice.call(document.querySelectorAll('aside a'));if(!links.length)links=[].slice.call(document.querySelectorAll('nav a'));
     var pc=null;for(var i=0;i<links.length;i++){if(/pending changes/i.test(links[i].textContent)){pc=links[i];break;}}
     if(!pc)return;
-    var item=pc.cloneNode(true);item.id='os-bd-nav';item.removeAttribute('href');item.style.cursor='pointer';
+    var item=pc.cloneNode(true);item.id='os-bd-nav';item.style.cursor='pointer';var alln=[item].concat([].slice.call(item.querySelectorAll('*')));alln.forEach(function(n){[].slice.call(n.attributes||[]).forEach(function(a){if(/^sc-/.test(a.name)||a.name==='href'||a.name==='title')n.removeAttribute(a.name);});});
     var spans=item.querySelectorAll('span');
     spans.forEach(function(sp){if(sp.children.length===0){var t=sp.textContent.trim();if(t==='P')sp.textContent='B';else if(/pending changes/i.test(t))sp.textContent='Business Development';else if(/^\d+$/.test(t))sp.remove();}});
     item.onclick=function(e){e.preventDefault();e.stopPropagation();openOv();};
