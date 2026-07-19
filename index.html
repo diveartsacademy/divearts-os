@@ -812,7 +812,7 @@ window.__dcPushChange = function(pc){
     item.onclick=function(e){e.preventDefault();e.stopPropagation();openOv();};
     pc.parentNode.insertBefore(item,pc.nextSibling);
   }
-  function __bdtick(){try{ensureNav();ensureOv();}catch(e){}}__bdtick();setInterval(__bdtick,800);
+  document.addEventListener('click',function(e){var n=e.target&&e.target.closest?e.target.closest('#os-bd-nav'):null;if(n){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();openOv();}},true);function __bdtick(){try{ensureNav();ensureOv();}catch(e){}}__bdtick();setInterval(__bdtick,800);
 })();
 </script>
 
