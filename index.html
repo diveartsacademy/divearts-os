@@ -800,7 +800,7 @@ window.__dcPushChange = function(pc){
       render(parse(md));
       document.getElementById('obsy').textContent='Synced from tracker'+(upd?(' · '+new Date(upd).toLocaleString()):'')+' · refreshes every few hours';
     }).catch(function(e){root.innerHTML='<div class="load">Could not reach the feed. Tap Reload. ('+(e&&e.message||e)+')</div>';document.getElementById('obsy').textContent='Offline';});}
-  function openOv(){ov.style.display='flex';load();}
+  function ensureOv(){if(!document.body.contains(ov))document.body.appendChild(ov);if(!document.head.contains(st))document.head.appendChild(st);}function openOv(){ensureOv();ov.style.display='flex';load();}
   window.__osBDopen=openOv;
   function ensureNav(){ if(document.getElementById('os-bd-nav'))return;
     var links=[].slice.call(document.querySelectorAll('aside a'));if(!links.length)links=[].slice.call(document.querySelectorAll('nav a'));
@@ -812,7 +812,7 @@ window.__dcPushChange = function(pc){
     item.onclick=function(e){e.preventDefault();e.stopPropagation();openOv();};
     pc.parentNode.insertBefore(item,pc.nextSibling);
   }
-  ensureNav();setInterval(ensureNav,800);
+  function __bdtick(){try{ensureNav();ensureOv();}catch(e){}}__bdtick();setInterval(__bdtick,800);
 })();
 </script>
 
