@@ -556,10 +556,10 @@ window.__dcPushChange = function(pc){
 
 
 <script>
-/* DiveArts OS - CX reply attach menu (+): catalogs, products, links */
+/* DiveArts OS - CX reply attach menu (+) v2: catalogs, live Shopify products, saved products, links, custom catalogs */
 (function(){
   if(window.__osCat)return; window.__osCat=1;
-  var CATS=[
+  var BASE=[
    ['Sea Diva — Catalog IDR','https://www.seadivatails.com/pages/catalog-sea-diva-tails-idr'],
    ['Sea Diva — Online Shop (USD)','https://www.seadivatails.com'],
    ['Sea Diva — Shopee','https://shopee.co.id/seadivatails'],
@@ -571,43 +571,75 @@ window.__dcPushChange = function(pc){
    ['Instructor Course — IDR','https://diveartsacademy.com/pages/catalog-padi-mermaid-and-underwater-dance-instructor-idr'],
    ['Instructor Course — USD','https://diveartsacademy.com/pages/catalog-padi-mermaid-and-underwater-dance-instructor-usd']
   ];
+  var LS={
+    cats:function(){try{return JSON.parse(localStorage.getItem('os_custom_cats')||'[]')}catch(e){return[]}},
+    setCats:function(a){try{localStorage.setItem('os_custom_cats',JSON.stringify(a))}catch(e){}},
+    prods:function(){try{return JSON.parse(localStorage.getItem('os_saved_products')||'[]')}catch(e){return[]}},
+    setProds:function(a){try{localStorage.setItem('os_saved_products',JSON.stringify(a))}catch(e){}}
+  };
   function esc(s){return String(s==null?'':s);}
   function nativeTA(){var t=document.querySelectorAll('textarea');for(var i=t.length-1;i>=0;i--){var r=t[i].getBoundingClientRect();if(r.width>40&&r.height>24)return t[i];}return null;}
   function toast(m){var t=document.getElementById('os-cat-toast');if(!t){t=document.createElement('div');t.id='os-cat-toast';t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:2147483000;background:#0C2A3A;color:#fff;padding:9px 14px;border-radius:10px;font:600 13px/1.3 Lato,sans-serif;box-shadow:0 3px 12px rgba(0,0,0,.3);display:none;max-width:340px';document.body.appendChild(t);}t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(function(){t.style.display='none';},2600);}
   function insertNative(text){var ta=nativeTA();if(ta){try{var set=Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype,'value').set;var v=ta.value?(ta.value+'\n'+text):text;set.call(ta,v);ta.dispatchEvent(new Event('input',{bubbles:true}));ta.focus();toast('Added to your reply ✓');return true;}catch(e){}}if(navigator.clipboard){navigator.clipboard.writeText(text);toast('Copied — paste into your reply box');}else{toast(text);}return false;}
   var panel=document.createElement('div');panel.id='os-cat-panel';
-  panel.style.cssText='position:fixed;width:360px;max-height:64vh;overflow:auto;z-index:2147483040;background:#fff;border:1px solid #E6DFCF;border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,.22);padding:12px 14px;display:none;font-family:Lato,-apple-system,sans-serif';
+  panel.style.cssText='position:fixed;width:370px;max-height:66vh;overflow:auto;z-index:2147483040;background:#fff;border:1px solid #E6DFCF;border-radius:14px;box-shadow:0 12px 36px rgba(0,0,0,.22);padding:12px 14px;display:none;font-family:Lato,-apple-system,sans-serif';
   document.body.appendChild(panel);
   var btn=document.createElement('button');btn.id='os-cat-btn';btn.innerHTML='+ Add';
   btn.style.cssText='position:fixed;z-index:2147483041;background:#C79A3B;color:#0C2A3A;border:none;border-radius:18px;padding:6px 14px;font:800 13px Lato,-apple-system,sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.22);display:none';
   document.body.appendChild(btn);
   function hd(title,back){var h=document.createElement('div');h.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:10px';
-    if(back){var b=document.createElement('button');b.innerHTML='‹ Back';b.style.cssText='background:#F1EADB;border:1px solid #E6DFCF;border-radius:16px;padding:5px 12px;font:700 12px Lato,sans-serif;cursor:pointer;color:#5A4A22';b.onclick=back;h.appendChild(b);}
+    if(back){var b=document.createElement('button');b.innerHTML='‹ Back';b.style.cssText='background:#F1EADB;border:1px solid #E6DFCF;border-radius:16px;padding:5px 12px;font:700 12px Lato,sans-serif;cursor:pointer;color:#5A4A22';b.onclick=function(){back();};h.appendChild(b);}
     var t=document.createElement('div');t.textContent=title;t.style.cssText='font:800 14px Georgia,serif;color:#0C2A3A';h.appendChild(t);
     var x=document.createElement('button');x.textContent='×';x.style.cssText='margin-left:auto;background:none;border:none;font-size:22px;line-height:1;cursor:pointer;color:#6E7B82';x.onclick=function(){panel.style.display='none';};h.appendChild(x);
     return h;}
+  function row(name,sub,onIns,onDel){var r=document.createElement('div');r.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #EAE3D3;border-radius:10px;padding:8px 11px;margin-bottom:6px';
+    r.innerHTML='<span style="min-width:0;flex:1"><span style="display:block;font-size:13px;font-weight:800;color:#0C2A3A">'+esc(name)+'</span><span style="display:block;font-size:11px;color:#8A8578;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(sub)+'</span></span>';
+    if(onDel){var d=document.createElement('button');d.textContent='×';d.title='Remove';d.style.cssText='flex:none;background:#F6EFEF;color:#B4463C;border:none;border-radius:8px;width:28px;height:30px;font-size:16px;cursor:pointer';d.onclick=onDel;r.appendChild(d);}
+    var b=document.createElement('button');b.textContent='Insert';b.style.cssText='flex:none;background:#0C2A3A;color:#fff;border:none;border-radius:9px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer';b.onclick=onIns;r.appendChild(b);
+    return r;}
+  function addBtn(label,onClick){var a=document.createElement('button');a.textContent=label;a.style.cssText='width:100%;background:#FBF7EE;border:1px dashed #C79A3B;color:#5A4A22;border-radius:10px;padding:10px;font-weight:800;font-size:13px;cursor:pointer;margin-top:4px';a.onclick=onClick;return a;}
   function menu(){ panel.innerHTML='';panel.appendChild(hd('Add to your reply',null));
-    var opts=[['🗂','Catalogs','Send a store or price-list link',cats],['🛍','Product','Send a specific product (name, price, link)',product],['🔗','Link','Paste any link to send',anylink]];
+    var opts=[['🗂','Catalogs & stores','Store or price-list links',cats],['🧜','Sea Diva products (live)','Pick from the live Shopify store',shop],['🛍','Saved products','Tokopedia / Shopee / your own list',saved],['🔗','Link','Paste any link to send',anylink]];
     opts.forEach(function(o){var r=document.createElement('div');r.style.cssText='display:flex;align-items:center;gap:12px;border:1px solid #EAE3D3;border-radius:11px;padding:11px 13px;margin-bottom:7px;cursor:pointer';r.onmouseover=function(){r.style.background='#FBF7EE';};r.onmouseout=function(){r.style.background='#fff';};
       r.innerHTML='<span style="font-size:20px">'+o[0]+'</span><span style="flex:1"><span style="display:block;font-size:14px;font-weight:800;color:#0C2A3A">'+o[1]+'</span><span style="display:block;font-size:11.5px;color:#8A8578">'+o[2]+'</span></span><span style="color:#C79A3B;font-size:18px">›</span>';
       r.onclick=o[3];panel.appendChild(r);});
     reposPanel(); }
   function cats(){ panel.innerHTML='';panel.appendChild(hd('Catalogs & stores',menu));
-    CATS.forEach(function(c){var r=document.createElement('div');r.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #EAE3D3;border-radius:10px;padding:8px 11px;margin-bottom:6px';
-      r.innerHTML='<span style="min-width:0"><span style="display:block;font-size:13px;font-weight:800;color:#0C2A3A">'+esc(c[0])+'</span><span style="display:block;font-size:11px;color:#8A8578;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px">'+esc(c[1])+'</span></span>';
-      var b=document.createElement('button');b.textContent='Insert';b.style.cssText='flex:none;background:#0C2A3A;color:#fff;border:none;border-radius:9px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer';b.onclick=function(){insertNative(c[0]+'\n'+c[1]);panel.style.display='none';};
-      r.appendChild(b);panel.appendChild(r);}); reposPanel(); }
-  function formView(title,fields,build){ panel.innerHTML='';panel.appendChild(hd(title,menu));
+    BASE.forEach(function(c){panel.appendChild(row(c[0],c[1],function(){insertNative(c[0]+'\n'+c[1]);panel.style.display='none';},null));});
+    var cust=LS.cats();
+    cust.forEach(function(c,i){panel.appendChild(row(c[0],c[1],function(){insertNative(c[0]+'\n'+c[1]);panel.style.display='none';},function(){var a=LS.cats();a.splice(i,1);LS.setCats(a);cats();}));});
+    panel.appendChild(addBtn('+ Add a catalog',addCat)); reposPanel(); }
+  function saved(){ panel.innerHTML='';panel.appendChild(hd('Saved products',menu));
+    var ps=LS.prods();
+    if(!ps.length){var e=document.createElement('div');e.style.cssText='font-size:12.5px;color:#8A8578;padding:6px 2px 10px';e.textContent='No saved products yet. Add a Tokopedia, Shopee, or any product link so you can send it with one tap.';panel.appendChild(e);}
+    ps.forEach(function(p,i){panel.appendChild(row(p[0],(p[1]?p[1]+'  ·  ':'')+p[2],function(){insertNative(p[0]+(p[1]?(' — '+p[1]):'')+'\n'+p[2]);panel.style.display='none';},function(){var a=LS.prods();a.splice(i,1);LS.setProds(a);saved();}));});
+    panel.appendChild(addBtn('+ Add a product',addProd)); reposPanel(); }
+  var SHOP=null;
+  function shop(){ panel.innerHTML='';panel.appendChild(hd('Sea Diva products (live)',menu));
+    var s=document.createElement('input');s.placeholder='Search products…';s.style.cssText='width:100%;box-sizing:border-box;border:1px solid #E6DFCF;border-radius:9px;padding:9px 11px;font-size:13px;margin-bottom:9px;background:#FCFAF4';panel.appendChild(s);
+    var list=document.createElement('div');panel.appendChild(list);
+    function render(items){list.innerHTML='';if(!items){list.innerHTML='<div style="font-size:12.5px;color:#B4463C;padding:6px 2px">Could not load the live store right now. Try again, or use Saved products.</div>';return;}
+      var q=(s.value||'').toLowerCase();var f=items.filter(function(p){return !q||p.title.toLowerCase().indexOf(q)>=0;});
+      if(!f.length){list.innerHTML='<div style="font-size:12.5px;color:#8A8578;padding:6px 2px">No products match.</div>';return;}
+      f.slice(0,60).forEach(function(p){list.appendChild(row(p.title,p.price+'  ·  '+p.url,function(){insertNative(p.title+(p.price?(' — '+p.price):'')+'\n'+p.url);panel.style.display='none';},null));});reposPanel();}
+    s.oninput=function(){render(SHOP);};
+    if(SHOP){render(SHOP);}
+    else{list.innerHTML='<div style="font-size:12.5px;color:#8A8578;padding:6px 2px">Loading live products…</div>';
+      fetch('https://www.seadivatails.com/products.json?limit=250').then(function(r){return r.json();}).then(function(d){SHOP=(d.products||[]).map(function(p){var pr=(p.variants&&p.variants[0]&&p.variants[0].price)?p.variants[0].price:'';return{title:p.title,price:pr?('USD '+pr):'',url:'https://www.seadivatails.com/products/'+p.handle};});render(SHOP);}).catch(function(){render(null);});}
+    reposPanel(); }
+  function formView(title,back,fields,build){ panel.innerHTML='';panel.appendChild(hd(title,back));
     fields.forEach(function(f,i){var inp=document.createElement('input');inp.id='osf-'+i;inp.placeholder=f;inp.style.cssText='width:100%;box-sizing:border-box;border:1px solid #E6DFCF;border-radius:9px;padding:9px 11px;font-size:13px;margin-bottom:8px;background:#FCFAF4';panel.appendChild(inp);});
-    var add=document.createElement('button');add.textContent='Add to reply';add.style.cssText='background:#0C2A3A;color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer';add.onclick=function(){var line=build();if(line){insertNative(line);panel.style.display='none';}};panel.appendChild(add);reposPanel(); }
-  function product(){ formView('Send a product',['Product name','Price (e.g. Rp 850.000 / USD 42)','Product link (Shopify / Shopee / Tokopedia / TikTok)'],function(){var n=document.getElementById('osf-0').value.trim();if(!n)return null;return n+(document.getElementById('osf-1').value?(' — '+document.getElementById('osf-1').value):'')+(document.getElementById('osf-2').value?('\n'+document.getElementById('osf-2').value):'');}); }
-  function anylink(){ formView('Send a link',['Label (optional, e.g. Booking form)','Paste link'],function(){var u=document.getElementById('osf-1').value.trim();if(!u)return null;var l=document.getElementById('osf-0').value.trim();return l?(l+'\n'+u):u;}); }
-  function reposPanel(){var ta=nativeTA();if(!ta)return;var r=ta.getBoundingClientRect();panel.style.left=Math.max(10,Math.min(r.right-360,window.innerWidth-370))+'px';panel.style.top='auto';panel.style.bottom=(window.innerHeight-(r.top-6))+'px';}
+    var add=document.createElement('button');add.textContent='Save & add to reply';add.style.cssText='background:#0C2A3A;color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer';add.onclick=function(){build();};panel.appendChild(add);reposPanel(); }
+  function addCat(){ formView('Add a catalog',cats,['Catalog name (e.g. Wholesale price list)','Paste link'],function(){var n=document.getElementById('osf-0').value.trim();var u=document.getElementById('osf-1').value.trim();if(!n||!u){toast('Please add a name and a link');return;}var a=LS.cats();a.push([n,u]);LS.setCats(a);insertNative(n+'\n'+u);panel.style.display='none';}); }
+  function addProd(){ formView('Add a product',saved,['Product name','Price (e.g. Rp 850.000 / USD 42)','Product link (Tokopedia / Shopee / any)'],function(){var n=document.getElementById('osf-0').value.trim();var pr=document.getElementById('osf-1').value.trim();var u=document.getElementById('osf-2').value.trim();if(!n||!u){toast('Please add a name and a link');return;}var a=LS.prods();a.push([n,pr,u]);LS.setProds(a);insertNative(n+(pr?(' — '+pr):'')+'\n'+u);panel.style.display='none';}); }
+  function anylink(){ panel.innerHTML='';panel.appendChild(hd('Send a link',menu));
+    ['Label (optional, e.g. Booking form)','Paste link'].forEach(function(f,i){var inp=document.createElement('input');inp.id='osl-'+i;inp.placeholder=f;inp.style.cssText='width:100%;box-sizing:border-box;border:1px solid #E6DFCF;border-radius:9px;padding:9px 11px;font-size:13px;margin-bottom:8px;background:#FCFAF4';panel.appendChild(inp);});
+    var add=document.createElement('button');add.textContent='Add to reply';add.style.cssText='background:#0C2A3A;color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer';add.onclick=function(){var u=document.getElementById('osl-1').value.trim();if(!u){toast('Paste a link first');return;}var l=document.getElementById('osl-0').value.trim();insertNative(l?(l+'\n'+u):u);panel.style.display='none';};panel.appendChild(add);reposPanel(); }
+  function reposPanel(){var ta=nativeTA();if(!ta)return;var r=ta.getBoundingClientRect();panel.style.left=Math.max(10,Math.min(r.right-370,window.innerWidth-380))+'px';panel.style.top='auto';panel.style.bottom=(window.innerHeight-(r.top-6))+'px';}
   btn.onclick=function(){if(panel.style.display==='block'){panel.style.display='none';return;}panel.style.display='block';menu();};
   function place(){if(!document.body.contains(btn))document.body.appendChild(btn);if(!document.body.contains(panel))document.body.appendChild(panel);var ta=nativeTA();if(ta){var r=ta.getBoundingClientRect();if(r.width>40&&r.bottom>50&&r.top<window.innerHeight-6){btn.style.display='block';var bw=btn.offsetWidth||64;btn.style.left=Math.max(8,r.right-bw-6)+'px';btn.style.top=(r.top-30)+'px';if(panel.style.display==='block')reposPanel();return;}}btn.style.display='none';}
   place();setInterval(place,600);window.addEventListener('scroll',place,true);window.addEventListener('resize',place);
 })();
-
 </script>
 </body>
 </html>
