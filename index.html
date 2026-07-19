@@ -556,9 +556,11 @@ window.__dcPushChange = function(pc){
 
 
 <script>
-/* DiveArts OS - CX reply attach menu (+) v3: catalogs, live Shopify products w/ photos, Shopee & Tokopedia saved photo-cards, links */
+/* DiveArts OS - CX reply attach menu (+) v4: catalogs, Sea Diva (live) + DiveArts Academy (live) w/ photos, Shopee & Tokopedia (live catalog via store link + saved items), links */
 (function(){
   if(window.__osCat)return; window.__osCat=1;
+  var SD='https://www.seadivatails.com', DAA='https://diveartsacademy.com';
+  var SHOPEE_STORE='https://shopee.co.id/seadivatails', TOKO_STORE='https://www.tokopedia.com/seadivatails';
   var BASE=[
    ['Sea Diva — Catalog IDR','https://www.seadivatails.com/pages/catalog-sea-diva-tails-idr'],
    ['Sea Diva — Online Shop (USD)','https://www.seadivatails.com'],
@@ -571,9 +573,7 @@ window.__dcPushChange = function(pc){
    ['Instructor Course — IDR','https://diveartsacademy.com/pages/catalog-padi-mermaid-and-underwater-dance-instructor-idr'],
    ['Instructor Course — USD','https://diveartsacademy.com/pages/catalog-padi-mermaid-and-underwater-dance-instructor-usd']
   ];
-  function coerceP(a){ // migrate old [name,price,url] arrays -> objects
-    return (a||[]).map(function(p){return Array.isArray(p)?{name:p[0],price:p[1],url:p[2],img:'',store:'other'}:p;});
-  }
+  function coerceP(a){return (a||[]).map(function(p){return Array.isArray(p)?{name:p[0],price:p[1],url:p[2],img:'',store:'other'}:p;});}
   var LS={
     cats:function(){try{return JSON.parse(localStorage.getItem('os_custom_cats')||'[]')}catch(e){return[]}},
     setCats:function(a){try{localStorage.setItem('os_custom_cats',JSON.stringify(a))}catch(e){}},
@@ -581,6 +581,8 @@ window.__dcPushChange = function(pc){
     setProds:function(a){try{localStorage.setItem('os_saved_products',JSON.stringify(a))}catch(e){}}
   };
   function esc(s){return String(s==null?'':s);}
+  function fmtUSD(p){return p?('USD '+p):'';}
+  function fmtIDR(p){var n=parseFloat(p);if(!n)return '';return 'Rp '+n.toLocaleString('id-ID',{maximumFractionDigits:0});}
   function nativeTA(){var t=document.querySelectorAll('textarea');for(var i=t.length-1;i>=0;i--){var r=t[i].getBoundingClientRect();if(r.width>40&&r.height>24)return t[i];}return null;}
   function toast(m){var t=document.getElementById('os-cat-toast');if(!t){t=document.createElement('div');t.id='os-cat-toast';t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:2147483000;background:#0C2A3A;color:#fff;padding:9px 14px;border-radius:10px;font:600 13px/1.3 Lato,sans-serif;box-shadow:0 3px 12px rgba(0,0,0,.3);display:none;max-width:340px';document.body.appendChild(t);}t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(function(){t.style.display='none';},2600);}
   function insertNative(text){var ta=nativeTA();if(ta){try{var set=Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype,'value').set;var v=ta.value?(ta.value+'\n'+text):text;set.call(ta,v);ta.dispatchEvent(new Event('input',{bubbles:true}));ta.focus();toast('Added to your reply ✓');return true;}catch(e){}}if(navigator.clipboard){navigator.clipboard.writeText(text);toast('Copied — paste into your reply box');}else{toast(text);}return false;}
@@ -595,11 +597,8 @@ window.__dcPushChange = function(pc){
     var t=document.createElement('div');t.textContent=title;t.style.cssText='font:800 14px Georgia,serif;color:#0C2A3A';h.appendChild(t);
     var x=document.createElement('button');x.textContent='×';x.style.cssText='margin-left:auto;background:none;border:none;font-size:22px;line-height:1;cursor:pointer;color:#6E7B82';x.onclick=function(){panel.style.display='none';};h.appendChild(x);
     return h;}
-  function thumb(img){
-    if(img){var im=document.createElement('img');im.src=img;im.style.cssText='width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid #EAE3D3;flex:none;background:#F4EFE3';im.onerror=function(){im.replaceWith(ph());};return im;}
-    return ph();
-  }
   function ph(){var d=document.createElement('div');d.style.cssText='width:44px;height:44px;border-radius:8px;border:1px solid #EAE3D3;flex:none;background:#F4EFE3;display:flex;align-items:center;justify-content:center;font-size:18px;color:#C79A3B';d.textContent='🖼';return d;}
+  function thumb(img){if(img){var im=document.createElement('img');im.src=img;im.loading='lazy';im.style.cssText='width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid #EAE3D3;flex:none;background:#F4EFE3';im.onerror=function(){im.replaceWith(ph());};return im;}return ph();}
   function row(img,name,sub,onIns,onDel){var r=document.createElement('div');r.style.cssText='display:flex;align-items:center;gap:10px;border:1px solid #EAE3D3;border-radius:10px;padding:8px 10px;margin-bottom:6px';
     r.appendChild(thumb(img));
     var mid=document.createElement('span');mid.style.cssText='min-width:0;flex:1';
@@ -609,8 +608,15 @@ window.__dcPushChange = function(pc){
     var b=document.createElement('button');b.textContent='Insert';b.style.cssText='flex:none;background:#0C2A3A;color:#fff;border:none;border-radius:9px;padding:8px 13px;font-weight:700;font-size:13px;cursor:pointer';b.onclick=onIns;r.appendChild(b);
     return r;}
   function addBtn(label,onClick){var a=document.createElement('button');a.textContent=label;a.style.cssText='width:100%;background:#FBF7EE;border:1px dashed #C79A3B;color:#5A4A22;border-radius:10px;padding:10px;font-weight:800;font-size:13px;cursor:pointer;margin-top:4px';a.onclick=onClick;return a;}
+  function divider(txt){var d=document.createElement('div');d.style.cssText='font-size:11px;font-weight:800;color:#8A8578;text-transform:uppercase;letter-spacing:.04em;margin:8px 2px 6px';d.textContent=txt;return d;}
+  function search(onType){var s=document.createElement('input');s.placeholder='Search products…';s.style.cssText='width:100%;box-sizing:border-box;border:1px solid #E6DFCF;border-radius:9px;padding:9px 11px;font-size:13px;margin-bottom:9px;background:#FCFAF4';s.oninput=function(){onType(s.value);};return s;}
   function menu(){ panel.innerHTML='';panel.appendChild(hd('Add to your reply',null));
-    var opts=[['🗂','Catalogs & stores','Store or price-list links',cats],['🧜','Sea Diva products (live)','Live Shopify store, with photos',shop],['🛒','Shopee products','Your saved Shopee items',shopee],['🟢','Tokopedia products','Your saved Tokopedia items',tokopedia],['🔗','Link','Paste any link to send',anylink]];
+    var opts=[['🗂','Catalogs & stores','Store or price-list links',cats],
+      ['🧜','Sea Diva products (live)','Live Shopify store, with photos',function(){livePicker('Sea Diva products (live)',SD,fmtUSD,SD+'/products/');}],
+      ['🎓','DiveArts Academy (live)','Live courses & products, with photos',function(){livePicker('DiveArts Academy (live)',DAA,fmtIDR,DAA+'/products/');}],
+      ['🛒','Shopee products','Your catalog + saved Shopee items',shopee],
+      ['🟢','Tokopedia products','Your catalog + saved Tokopedia items',tokopedia],
+      ['🔗','Link','Paste any link to send',anylink]];
     opts.forEach(function(o){var r=document.createElement('div');r.style.cssText='display:flex;align-items:center;gap:12px;border:1px solid #EAE3D3;border-radius:11px;padding:11px 13px;margin-bottom:7px;cursor:pointer';r.onmouseover=function(){r.style.background='#FBF7EE';};r.onmouseout=function(){r.style.background='#fff';};
       r.innerHTML='<span style="font-size:20px">'+o[0]+'</span><span style="flex:1"><span style="display:block;font-size:14px;font-weight:800;color:#0C2A3A">'+o[1]+'</span><span style="display:block;font-size:11.5px;color:#8A8578">'+o[2]+'</span></span><span style="color:#C79A3B;font-size:18px">›</span>';
       r.onclick=o[3];panel.appendChild(r);});
@@ -620,29 +626,42 @@ window.__dcPushChange = function(pc){
     var cust=LS.cats();
     cust.forEach(function(c,i){panel.appendChild(row(null,c[0],c[1],function(){insertNative(c[0]+'\n'+c[1]);panel.style.display='none';},function(){var a=LS.cats();a.splice(i,1);LS.setCats(a);cats();}));});
     panel.appendChild(addBtn('+ Add a catalog',addCat)); reposPanel(); }
-  function savedView(store,label,back){ panel.innerHTML='';panel.appendChild(hd(label+' products',back));
-    var all=LS.prods();var ps=all.filter(function(p){return p.store===store;});
-    if(!ps.length){var e=document.createElement('div');e.style.cssText='font-size:12.5px;color:#8A8578;padding:6px 2px 10px';e.textContent='No '+label+' products saved yet. Add one below (paste the product link, price, and a photo) and it stays here for one-tap sending.';panel.appendChild(e);}
-    ps.forEach(function(p){var gi=all.indexOf(p);panel.appendChild(row(p.img,p.name,(p.price?p.price+'  ·  ':'')+p.url,function(){insertNative(p.name+(p.price?(' — '+p.price):'')+'\n'+p.url);panel.style.display='none';},function(){var a=LS.prods();a.splice(gi,1);LS.setProds(a);savedView(store,label,back);}));});
-    panel.appendChild(addBtn('+ Add a '+label+' product',function(){addProd(store,label,function(){savedView(store,label,back);});})); reposPanel(); }
-  function shopee(){ savedView('shopee','Shopee',menu); }
-  function tokopedia(){ savedView('tokopedia','Tokopedia',menu); }
-  var SHOP=null;
-  function shop(){ panel.innerHTML='';panel.appendChild(hd('Sea Diva products (live)',menu));
-    var s=document.createElement('input');s.placeholder='Search products…';s.style.cssText='width:100%;box-sizing:border-box;border:1px solid #E6DFCF;border-radius:9px;padding:9px 11px;font-size:13px;margin-bottom:9px;background:#FCFAF4';panel.appendChild(s);
-    var list=document.createElement('div');panel.appendChild(list);
+  var CACHE={};
+  function loadFeed(base,cb){ if(CACHE[base]){cb(CACHE[base]);return;} fetch(base+'/products.json?limit=250').then(function(r){return r.json();}).then(function(d){CACHE[base]=(d.products||[]).map(function(p){var pr=(p.variants&&p.variants[0]&&p.variants[0].price)?p.variants[0].price:'';var im=(p.images&&p.images[0]&&p.images[0].src)?p.images[0].src:'';return{title:p.title,price:pr,handle:p.handle,img:im};});cb(CACHE[base]);}).catch(function(){cb(null);}); }
+  function livePicker(title,base,fmt,prodBase){ panel.innerHTML='';panel.appendChild(hd(title,menu));
+    var list=document.createElement('div');
+    var s=search(function(){render(CACHE[base]);});panel.appendChild(s);panel.appendChild(list);
     function render(items){list.innerHTML='';if(!items){list.innerHTML='<div style="font-size:12.5px;color:#B4463C;padding:6px 2px">Could not load the live store right now. Try again in a moment.</div>';return;}
       var q=(s.value||'').toLowerCase();var f=items.filter(function(p){return !q||p.title.toLowerCase().indexOf(q)>=0;});
       if(!f.length){list.innerHTML='<div style="font-size:12.5px;color:#8A8578;padding:6px 2px">No products match.</div>';return;}
-      f.slice(0,60).forEach(function(p){list.appendChild(row(p.img,p.title,p.price+'  ·  '+p.url,function(){insertNative(p.title+(p.price?(' — '+p.price):'')+'\n'+p.url);panel.style.display='none';},null));});reposPanel();}
-    s.oninput=function(){render(SHOP);};
-    if(SHOP){render(SHOP);}
-    else{list.innerHTML='<div style="font-size:12.5px;color:#8A8578;padding:6px 2px">Loading live products…</div>';
-      fetch('https://www.seadivatails.com/products.json?limit=250').then(function(r){return r.json();}).then(function(d){SHOP=(d.products||[]).map(function(p){var pr=(p.variants&&p.variants[0]&&p.variants[0].price)?p.variants[0].price:'';var im=(p.images&&p.images[0]&&p.images[0].src)?p.images[0].src:'';return{title:p.title,price:pr?('USD '+pr):'',url:'https://www.seadivatails.com/products/'+p.handle,img:im};});render(SHOP);}).catch(function(){render(null);});}
+      f.slice(0,80).forEach(function(p){var pr=fmt(p.price);var url=prodBase+p.handle;list.appendChild(row(p.img,p.title,(pr?pr+'  ·  ':'')+url,function(){insertNative(p.title+(pr?(' — '+pr):'')+'\n'+url);panel.style.display='none';},null));});reposPanel();}
+    if(CACHE[base]){render(CACHE[base]);}else{list.innerHTML='<div style="font-size:12.5px;color:#8A8578;padding:6px 2px">Loading live products…</div>';loadFeed(base,render);}
     reposPanel(); }
+  function storePicker(store,label,storeUrl){ panel.innerHTML='';panel.appendChild(hd(label+' products',menu));
+    var top=document.createElement('div');var list=document.createElement('div');
+    var s=search(function(){draw();});panel.appendChild(s);panel.appendChild(top);panel.appendChild(list);
+    function draw(){ var q=(s.value||'').toLowerCase();
+      top.innerHTML='';list.innerHTML='';
+      var saved=LS.prods().filter(function(p){return p.store===store;});
+      var savedF=saved.filter(function(p){return !q||(p.name||'').toLowerCase().indexOf(q)>=0;});
+      if(savedF.length){top.appendChild(divider('Your saved '+label+' items'));
+        savedF.forEach(function(p){var gi=LS.prods().map(function(x){return x.name+'|'+x.url+'|'+x.store;}).indexOf(p.name+'|'+p.url+'|'+p.store);
+          top.appendChild(row(p.img,p.name,(p.price?p.price+'  ·  ':'')+p.url,function(){insertNative(p.name+(p.price?(' — '+p.price):'')+'\n'+p.url);panel.style.display='none';},function(){var a=LS.prods();if(gi>-1)a.splice(gi,1);LS.setProds(a);draw();}));});}
+      var cat=CACHE[SD];
+      if(!cat){list.innerHTML='<div style="font-size:12.5px;color:#8A8578;padding:6px 2px">Loading your catalog…</div>';return;}
+      var catF=cat.filter(function(p){return !q||p.title.toLowerCase().indexOf(q)>=0;});
+      list.appendChild(divider('From your catalog · sends your '+label+' store link'));
+      if(!catF.length){var e=document.createElement('div');e.style.cssText='font-size:12.5px;color:#8A8578;padding:2px 2px';e.textContent='No products match.';list.appendChild(e);}
+      catF.slice(0,80).forEach(function(p){list.appendChild(row(p.img,p.title,storeUrl,function(){insertNative(p.title+'\n'+storeUrl);panel.style.display='none';},null));});
+      reposPanel();}
+    draw();
+    if(!CACHE[SD]){loadFeed(SD,function(){draw();});}
+    panel.appendChild(addBtn('+ Add a '+label+' product (exact link & price)',function(){addProd(store,label,function(){storePicker(store,label,storeUrl);});}));
+    reposPanel(); }
+  function shopee(){ storePicker('shopee','Shopee',SHOPEE_STORE); }
+  function tokopedia(){ storePicker('tokopedia','Tokopedia',TOKO_STORE); }
   function addProd(store,label,back){ panel.innerHTML='';panel.appendChild(hd('Add a '+label+' product',back));
-    var linkPh=store==='shopee'?'Shopee product link':(store==='tokopedia'?'Tokopedia product link':'Product link');
-    var fields=['Product name','Price (e.g. Rp 850.000)',linkPh,'Photo link (optional — paste image URL)'];
+    var fields=['Product name','Price (e.g. Rp 850.000)',label+' product link','Photo link (optional — paste image URL)'];
     fields.forEach(function(f,i){var inp=document.createElement('input');inp.id='osf-'+i;inp.placeholder=f;inp.style.cssText='width:100%;box-sizing:border-box;border:1px solid #E6DFCF;border-radius:9px;padding:9px 11px;font-size:13px;margin-bottom:8px;background:#FCFAF4';panel.appendChild(inp);});
     var hint=document.createElement('div');hint.style.cssText='font-size:11px;color:#8A8578;margin:-2px 0 9px 2px';hint.textContent='Tip: on the '+label+' app, open the product → Share → Copy link. For the photo, long-press the product image → Copy image address.';panel.appendChild(hint);
     var add=document.createElement('button');add.textContent='Save & add to reply';add.style.cssText='background:#0C2A3A;color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-size:13px;cursor:pointer';
