@@ -702,19 +702,119 @@ window.__dcPushChange = function(pc){
   place();setInterval(place,600);window.addEventListener('scroll',place,true);window.addEventListener('resize',place);
 })();
 </script>
+
 <script>
-/* DiveArts OS - Business Development launcher chip (self-remounting) */
+/* DiveArts OS - Business Development left-nav tab + full-screen synced dashboard */
 (function(){
-  if(window.__osBD)return; window.__osBD=1;
+  if(window.__osBDTab)return; window.__osBDTab=1;
+  var FEED='https://hook.eu1.make.com/qlrpfzlldecnbompqosbeb3xaadv9cag';
   var SHEET='https://docs.google.com/spreadsheets/d/1wv4C4KymdZBfQCDfj3H0Lgg44T2GUy1mj5HaaXnNHAw/edit';
-  var b=document.createElement('button');b.id='os-bd-chip';b.innerHTML='&#128200; Business Development';
-  b.title='Open the Sea Diva Outreach Tracker (Business Development)';
-  b.style.cssText='position:fixed;right:18px;bottom:74px;z-index:2147482900;background:#0C2A3A;color:#EFE8DA;border:1px solid #C79A3B;border-radius:22px;padding:9px 15px;font:800 12.5px Lato,-apple-system,sans-serif;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.28);display:flex;align-items:center;gap:6px';
-  b.onmouseover=function(){b.style.background='#123648';};b.onmouseout=function(){b.style.background='#0C2A3A';};
-  b.onclick=function(){window.open(SHEET,'_blank','noopener');};
-  function place(){if(!document.body.contains(b))document.body.appendChild(b);}
-  place();setInterval(place,800);
+  var oc=document.getElementById('os-bd-chip'); if(oc)oc.remove();
+  var st=document.createElement('style');st.textContent='#os-bd-ov{position:fixed;inset:0;z-index:2147483300;background:#FBF8F1;color:#0C2A3A;font-family:Lato,-apple-system,sans-serif;display:none;flex-direction:column}#os-bd-ov *{box-sizing:border-box}#os-bd-ov .top{flex:0 0 auto;display:flex;align-items:center;gap:14px;padding:16px 26px;background:#0C2A3A;color:#EFE8DA}#os-bd-ov .top h1{font-family:Georgia,serif;font-size:20px;margin:0}#os-bd-ov .top .sy{font-size:11.5px;color:#B9C4CC;margin-top:2px}#os-bd-ov .top .sp{flex:1}#os-bd-ov .top button{border:1px solid #C79A3B;background:transparent;color:#EFE8DA;border-radius:20px;padding:7px 14px;font:700 12.5px Lato,sans-serif;cursor:pointer;margin-left:8px}#os-bd-ov .top button.x{border-color:#5A6b74;font-size:18px;padding:2px 12px}#os-bd-ov .top button.gold{background:#C79A3B;color:#0C2A3A;border-color:#C79A3B}#os-bd-ov .bd{flex:1;overflow:auto;padding:22px 26px 60px}#os-bd-ov .wrap{max-width:1120px;margin:0 auto}#os-bd-ov .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;margin-bottom:22px}#os-bd-ov .kpi{background:#fff;border:1px solid #E9E2D2;border-radius:13px;padding:13px 15px}#os-bd-ov .kpi .n{font-family:Georgia,serif;font-size:27px;line-height:1}#os-bd-ov .kpi .l{font-size:11px;color:#8A8578;margin-top:5px;text-transform:uppercase;letter-spacing:.03em}#os-bd-ov .kpi.act .n{color:#B4463C}#os-bd-ov .sec{background:#fff;border:1px solid #E9E2D2;border-radius:14px;padding:16px 18px;margin-bottom:18px}#os-bd-ov .sec h2{font-family:Georgia,serif;font-size:17px;margin:0 0 12px;display:flex;align-items:center;gap:8px}#os-bd-ov .sec h2 .c{font-size:12px;color:#8A8578;font-weight:700;background:#F3EEE1;border-radius:20px;padding:2px 9px}#os-bd-ov .bar{display:flex;align-items:center;gap:10px;margin:7px 0}#os-bd-ov .bar .lab{width:130px;font-size:12.5px;flex:none;font-weight:700}#os-bd-ov .bar .tr{flex:1;background:#F1EBDC;border-radius:8px;height:20px;overflow:hidden}#os-bd-ov .bar .fl{height:100%;border-radius:8px;min-width:2px}#os-bd-ov .bar .v{width:34px;text-align:right;font-size:12.5px;font-weight:800;flex:none}#os-bd-ov .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px}#os-bd-ov .seg .box{border:1px solid #E9E2D2;border-radius:11px;padding:10px 12px}#os-bd-ov .seg .box .t{font-weight:800;font-size:13px;margin-bottom:6px}#os-bd-ov .seg .box .r{display:flex;justify-content:space-between;font-size:12px;color:#8A8578;padding:1px 0}#os-bd-ov .seg .box .r b{color:#0C2A3A}#os-bd-ov .item{border:1px solid #E9E2D2;border-radius:11px;padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}#os-bd-ov .badge{flex:none;font-size:10.5px;font-weight:800;color:#fff;border-radius:20px;padding:3px 9px;margin-top:1px;white-space:nowrap}#os-bd-ov .item .nm{font-weight:800;font-size:13.5px}#os-bd-ov .item .nm a{color:#C79A3B;text-decoration:none;font-size:12px;margin-left:6px}#os-bd-ov .item .meta{font-size:12px;color:#8A8578;margin-top:1px}#os-bd-ov .item .next{font-size:12.5px;margin-top:4px}#os-bd-ov .item .next b{color:#C79A3B}#os-bd-ov .tblbar{display:flex;gap:8px;align-items:center;margin-bottom:9px;flex-wrap:wrap}#os-bd-ov .tblbar input{border:1px solid #E9E2D2;border-radius:9px;padding:7px 10px;font-size:13px;background:#FCFAF4;min-width:200px}#os-bd-ov .tabs{display:flex;gap:6px}#os-bd-ov .tabs button{border:1px solid #E9E2D2;background:#F6F1E5;border-radius:20px;padding:6px 13px;font:700 12.5px Lato,sans-serif;cursor:pointer;color:#0C2A3A}#os-bd-ov .tabs button.on{background:#0C2A3A;color:#fff;border-color:#0C2A3A}#os-bd-ov table{width:100%;border-collapse:collapse;font-size:12.5px}#os-bd-ov th,#os-bd-ov td{text-align:left;padding:7px 8px;border-bottom:1px solid #E9E2D2;vertical-align:top}#os-bd-ov th{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:#8A8578;cursor:pointer;white-space:nowrap}#os-bd-ov td .h{color:#8A8578;font-size:11px}#os-bd-ov .pill{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;border-radius:20px;padding:2px 8px}#os-bd-ov .rules{display:grid;grid-template-columns:180px 1fr;gap:2px 14px;font-size:12.5px}#os-bd-ov .rules .k{font-weight:800}#os-bd-ov .rules .v{color:#4a4a44;border-bottom:1px solid #E9E2D2;padding-bottom:5px;margin-bottom:5px}#os-bd-ov .muted{color:#8A8578}#os-bd-ov .load{padding:50px;text-align:center;color:#8A8578}#os-bd-ov .spin{width:26px;height:26px;border:3px solid #E9E2D2;border-top-color:#C79A3B;border-radius:50%;animation:obs 1s linear infinite;margin:0 auto 12px}@keyframes obs{to{transform:rotate(360deg)}}';
+  document.head.appendChild(st);
+  var ov=document.createElement('div');ov.id='os-bd-ov';
+  ov.innerHTML='<div class="top"><div><h1>Business Development — Outreach</h1><div class="sy" id="obsy">Loading…</div></div><div class="sp"></div><button id="obrl">Reload</button><button class="gold" id="obedit">Open tracker to edit</button><button class="x" id="obx">&times;</button></div><div class="bd"><div class="wrap" id="obr"></div></div>';
+  document.body.appendChild(ov);
+  document.getElementById('obx').onclick=function(){ov.style.display='none';};
+  document.getElementById('obedit').onclick=function(){window.open(SHEET,'_blank','noopener');};
+  document.getElementById('obrl').onclick=function(){load();};
+  var C={Hot:'#B4463C',Warm:'#C77F3B','In conversation':'#2E7D6B',Replied:'#4F72B0',Contacted:'#7C8A80',Queued:'#A99B78',Blocked:'#8A7FA0',Excluded:'#C4BCA8',Other:'#B7AE97'};
+  function clean(s){return (s==null?'':String(s)).replace(/\\(.)/g,'$1').replace(/[^\x00-\x7F]+/g,'').replace(/\s+/g,' ').trim();}
+  function tabOf(no){no=(no||'').toUpperCase();if(/^S\d/.test(no))return 'Schools';if(/^V\d/.test(no)||no==='BENCH')return 'Venues';return 'Personal';}
+  function bucket(s){s=(s||'').toUpperCase();
+   if(/BLACKLIST|DISQUALIF|EXCLUD|DEDUPE|RECLASS|DEFUNCT|SEE SCHOOL|COMPETITOR/.test(s))return 'Excluded';
+   if(/BLOCKED|HELD|PARK|FLAG|SITE UNREACH|FORM ONLY|NO DM/.test(s))return 'Blocked';
+   if(/HOT|WANTS TO SEE|HIGH PRIORITY|DESIGN DELIVERY/.test(s))return 'Hot';
+   if(/WARM/.test(s))return 'Warm';
+   if(/CONVERSATION/.test(s))return 'In conversation';
+   if(/REPLIED/.test(s))return 'Replied';
+   if(/SENT/.test(s))return 'Contacted';
+   if(/NEW|QUEUED|VISIT|VERIFY|DRAFT READY|EMAIL DRAFT|FIND HANDLE/.test(s))return 'Queued';
+   return 'Other';}
+  function parse(md){var lines=md.split('\n');var prospects=[],waiting=[],rules=[];var mode=null;
+    for(var li=0;li<lines.length;li++){var line=lines[li];if(!line.trim().startsWith('|'))continue;
+      var cells=line.split('|').slice(1,-1).map(function(c){return c.trim();});
+      if(cells.every(function(c){return /^:?-+:?$/.test(c)||c==='';}))continue;
+      var f=clean(cells[0]);
+      if(f==='No'&&cells.map(clean).indexOf('Handle')>=0){mode='prospects';continue;}
+      if(f==='#'&&/decision/i.test(clean(cells[1]||''))){mode='waiting';continue;}
+      if(f==='Item'&&/detail/i.test(clean(cells[1]||''))){mode='rules';continue;}
+      if(mode==='prospects'){var no=clean(cells[0]),handle=clean(cells[1]),name=clean(cells[2]);if(!no&&!handle&&!name)continue;
+        prospects.push({no:no,handle:handle,name:name,country:clean(cells[3]),segment:clean(cells[4]),status:clean(cells[8]),fu1:clean(cells[10]),fu2:clean(cells[11]),replied:clean(cells[12]),design:clean(cells[14]),draft:clean(cells[15]),chat:clean(cells[19]),reply:clean(cells[21]),thread:clean(cells[22]),next:clean(cells[23]),tab:tabOf(no),bucket:bucket(clean(cells[8]))});}
+      else if(mode==='waiting'){var n=clean(cells[0]);if(n==='#'||!n)continue;waiting.push({n:n,task:clean(cells[1]),ctx:clean(cells[2]),urg:clean(cells[3]),status:clean(cells[4])});}
+      else if(mode==='rules'){var k=clean(cells[0]);if(!k||k==='Item')continue;rules.push([k,clean(cells[1])]);}}
+    return {prospects:prospects,waiting:waiting,rules:rules};}
+  function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;}
+  function badge(b){return '<span class="badge" style="background:'+(C[b]||'#999')+'">'+b+'</span>';}
+  function linkFor(p){return p.thread&&/^https?:/.test(p.thread)?p.thread:(p.handle&&p.handle.charAt(0)==='@'?'https://instagram.com/'+p.handle.slice(1):'');}
+  function render(data){var root=document.getElementById('obr');root.innerHTML='';
+    var P=data.prospects;var active=P.filter(function(p){return p.bucket!=='Excluded';});
+    var by=function(b){return active.filter(function(p){return p.bucket===b;});};
+    var hot=by('Hot'),warm=by('Warm'),conv=by('In conversation'),rep=by('Replied'),cont=by('Contacted'),queue=by('Queued'),block=by('Blocked');
+    var design=active.filter(function(p){return p.design||/DESIGN/i.test(p.status);});
+    var openD=data.waiting.filter(function(w){return /open/i.test(w.status);});
+    var needs=hot.concat(warm,conv,rep);
+    var kpis=[['Active prospects',active.length,0],['Needs you now',needs.length,1],['In conversation',conv.length,0],['Replied',rep.length,0],['Hot / warm',hot.length+warm.length,1],['Design queue',design.length,0],['Contacted (no reply)',cont.length,0],['Waiting on you',openD.length,1]];
+    var kg=el('div','kpis');kpis.forEach(function(k){kg.appendChild(el('div','kpi'+(k[2]?' act':''),'<div class="n">'+k[1]+'</div><div class="l">'+k[0]+'</div>'));});root.appendChild(kg);
+    var stages=[['Queued',queue.length,'Queued'],['Contacted',cont.length,'Contacted'],['Replied',rep.length,'Replied'],['In conversation',conv.length,'In conversation'],['Warm',warm.length,'Warm'],['Hot',hot.length,'Hot'],['Blocked',block.length,'Blocked']];
+    var mx=Math.max.apply(null,[1].concat(stages.map(function(s){return s[1];})));
+    var ps=el('div','sec');ps.appendChild(el('h2',null,'Pipeline <span class="c">'+active.length+' active</span>'));
+    stages.forEach(function(s){ps.appendChild(el('div','bar','<div class="lab">'+s[0]+'</div><div class="tr"><div class="fl" style="width:'+(s[1]/mx*100)+'%;background:'+C[s[2]]+'"></div></div><div class="v">'+s[1]+'</div>'));});
+    var seg=el('div','seg');['Personal','Schools','Venues'].forEach(function(t){var rows=active.filter(function(p){return p.tab===t;});var b={};rows.forEach(function(p){b[p.bucket]=(b[p.bucket]||0)+1;});
+      var html='<div class="t">'+t+' &middot; '+rows.length+'</div>';['Hot','Warm','In conversation','Replied','Contacted','Queued','Blocked'].forEach(function(k){if(b[k])html+='<div class="r"><span>'+k+'</span><b>'+b[k]+'</b></div>';});
+      seg.appendChild(el('div','box',html));});
+    ps.appendChild(seg);root.appendChild(ps);
+    var ns=el('div','sec');ns.appendChild(el('h2',null,'&#128293; Needs you now <span class="c">'+(needs.length+openD.length)+'</span>'));
+    if(!needs.length&&!openD.length)ns.appendChild(el('div','muted','Nothing waiting.'));
+    var ord=['Hot','Warm','In conversation','Replied'];needs.sort(function(a,b){return ord.indexOf(a.bucket)-ord.indexOf(b.bucket);});
+    needs.forEach(function(p){var lk=linkFor(p);var nm=p.name||p.handle||p.no;
+      ns.appendChild(el('div','item',badge(p.bucket)+'<div style="min-width:0;flex:1"><div class="nm">'+nm+(lk?' <a href="'+lk+'" target="_blank">open &#8599;</a>':'')+'</div><div class="meta">'+[p.tab,p.country,p.segment].filter(Boolean).join(' &middot; ')+(p.status?' — '+p.status:'')+'</div>'+(p.next?'<div class="next"><b>Next:</b> '+p.next+'</div>':(p.reply?'<div class="next"><b>Draft reply ready.</b></div>':''))+'</div>'));});
+    openD.forEach(function(w){var u=/now/i.test(w.urg)?'#B4463C':/high/i.test(w.urg)?'#C77F3B':'#8A8578';
+      ns.appendChild(el('div','item','<span class="badge" style="background:'+u+'">DECISION</span><div style="min-width:0;flex:1"><div class="nm">'+w.task+'</div><div class="meta">'+w.ctx+'</div></div>'));});
+    root.appendChild(ns);
+    if(design.length){var ds=el('div','sec');ds.appendChild(el('h2',null,'&#127912; Design queue <span class="c">'+design.length+'</span>'));
+      design.forEach(function(p){var lk=p.draft&&/^https?:/.test(p.draft)?p.draft:'';ds.appendChild(el('div','item',badge(p.bucket)+'<div style="min-width:0;flex:1"><div class="nm">'+(p.name||p.handle)+(lk?' <a href="'+lk+'" target="_blank">draft &#8599;</a>':'')+'</div><div class="meta">'+p.tab+' &middot; '+p.country+'</div><div class="next">'+(p.design||p.status)+'</div></div>'));});
+      root.appendChild(ds);}
+    var ts=el('div','sec');ts.appendChild(el('h2',null,'All prospects <span class="c">'+P.length+'</span>'));
+    var bar=el('div','tblbar');var tabsEl=el('div','tabs');var inp=el('input');inp.placeholder='Search name, handle, country, status…';
+    var curTab='Personal',sortKey='no',sortDir=1;
+    ['Personal','Schools','Venues'].forEach(function(t){var b=el('button',t===curTab?'on':'',t+' ('+P.filter(function(p){return p.tab===t;}).length+')');b.onclick=function(){curTab=t;[].slice.call(tabsEl.children).forEach(function(c){c.className=(c.textContent.indexOf(t)===0?'on':'');});draw();};tabsEl.appendChild(b);});
+    bar.appendChild(tabsEl);bar.appendChild(inp);ts.appendChild(bar);var tw=el('div');ts.appendChild(tw);root.appendChild(ts);
+    var cols=[['no','No'],['name','Name'],['country','Country'],['bucket','Stage'],['status','Status'],['next','Next step']];
+    function draw(){var q=inp.value.toLowerCase();
+      var rows=P.filter(function(p){return p.tab===curTab;}).filter(function(p){return !q||[p.no,p.name,p.handle,p.country,p.status,p.next,p.segment].join(' ').toLowerCase().indexOf(q)>=0;});
+      rows.sort(function(a,b){return (''+(a[sortKey]||'')).localeCompare(''+(b[sortKey]||''),undefined,{numeric:true})*sortDir;});
+      var h='<table><thead><tr>'+cols.map(function(c){return '<th data-k="'+c[0]+'">'+c[1]+(sortKey===c[0]?(sortDir>0?' ▲':' ▼'):'')+'</th>';}).join('')+'</tr></thead><tbody>';
+      rows.forEach(function(p){var lk=linkFor(p);h+='<tr><td>'+p.no+'</td><td>'+(p.name||'')+(p.handle?'<div class="h">'+(lk?'<a href="'+lk+'" target="_blank" style="color:#C79A3B;text-decoration:none">'+p.handle+'</a>':p.handle)+'</div>':'')+'</td><td>'+p.country+'</td><td><span class="pill" style="background:'+(C[p.bucket]||'#999')+'">'+p.bucket+'</span></td><td>'+p.status+'</td><td>'+(p.next||'<span class="muted">—</span>')+'</td></tr>';});
+      h+='</tbody></table>';if(!rows.length)h='<div class="muted" style="padding:14px">No rows.</div>';tw.innerHTML=h;
+      [].slice.call(tw.querySelectorAll('th')).forEach(function(th){th.onclick=function(){var k=th.dataset.k;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=1;}draw();};});}
+    inp.oninput=draw;draw();
+    if(data.rules.length){var rs=el('div','sec');rs.appendChild(el('h2',null,'Offers, quota &amp; key dates'));var g=el('div','rules');
+      data.rules.forEach(function(r){g.appendChild(el('div','k',r[0]));g.appendChild(el('div','v',r[1]));});rs.appendChild(g);root.appendChild(rs);}
+  }
+  function load(){var root=document.getElementById('obr');root.innerHTML='<div class="load"><div class="spin"></div>Syncing with your outreach tracker…</div>';
+    document.getElementById('obsy').textContent='Syncing…';
+    fetch(FEED+'?action=feed',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
+      var md=(d&&d[0]&&d[0].content)||'';var upd=(d&&d[0]&&d[0].updated_at)||'';
+      if(!md||md.indexOf('|')<0){root.innerHTML='<div class="load">The dashboard is still syncing from your tracker — it fills in automatically within a few minutes. Tap <b>Reload</b> shortly.</div>';document.getElementById('obsy').textContent='Waiting for first sync';return;}
+      render(parse(md));
+      document.getElementById('obsy').textContent='Synced from tracker'+(upd?(' · '+new Date(upd).toLocaleString()):'')+' · refreshes every few hours';
+    }).catch(function(e){root.innerHTML='<div class="load">Could not reach the feed. Tap Reload. ('+(e&&e.message||e)+')</div>';document.getElementById('obsy').textContent='Offline';});}
+  function openOv(){ov.style.display='flex';load();}
+  window.__osBDopen=openOv;
+  function ensureNav(){ if(document.getElementById('os-bd-nav'))return;
+    var links=[].slice.call(document.querySelectorAll('aside a'));if(!links.length)links=[].slice.call(document.querySelectorAll('nav a'));
+    var pc=null;for(var i=0;i<links.length;i++){if(/pending changes/i.test(links[i].textContent)){pc=links[i];break;}}
+    if(!pc)return;
+    var item=pc.cloneNode(true);item.id='os-bd-nav';item.removeAttribute('href');item.style.cursor='pointer';
+    var spans=item.querySelectorAll('span');
+    spans.forEach(function(sp){if(sp.children.length===0){var t=sp.textContent.trim();if(t==='P')sp.textContent='B';else if(/pending changes/i.test(t))sp.textContent='Business Development';else if(/^\d+$/.test(t))sp.remove();}});
+    item.onclick=function(e){e.preventDefault();e.stopPropagation();openOv();};
+    pc.parentNode.insertBefore(item,pc.nextSibling);
+  }
+  ensureNav();setInterval(ensureNav,800);
 })();
 </script>
+
 </body>
 </html>
