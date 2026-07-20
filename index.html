@@ -3,7 +3,35 @@
 <head>
 
   <meta charset="utf-8">
-  <title>Bundled Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0C2A3A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DiveArts OS">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <title>DiveArts OS</title>
+  <style id="os-mobile">
+  @media (max-width:640px){
+    #os-cp-ov .hd{padding:10px 12px;gap:8px}
+    #os-cp-ov .hd .t{font-size:16px}
+    #os-cp-ov .tabs{margin-left:6px;gap:6px}
+    #os-cp-ov .tb{padding:5px 10px;font-size:11.5px}
+    #os-cp-ov .body{flex-direction:column;min-height:0}
+    #os-cp-ov .rail{width:100%;height:auto;max-height:120px;border-right:none;border-bottom:1px solid #E2D9C4;display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;align-items:center;padding:8px 10px}
+    #os-cp-ov .nw{width:auto;margin:0;white-space:nowrap;flex:none;padding:9px 12px}
+    #os-cp-ov .ci{flex:none;max-width:180px;margin:0}
+    #os-cp-ov .wrap{padding:14px}
+    #os-cp-ov .bub{max-width:90%}
+    #os-cp-ov .foot{padding:10px 12px}
+    #os-cp-ov .fin{gap:8px}
+    #os-cp-ov .analysis,#os-cp-ov .ecard,#os-cp-ov .in{max-width:100%}
+    #os-ci-ov .in,#os-acc .in{max-width:100% !important}
+    #os-acc .cd.sub{margin-left:12px}
+  }
+  </style>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #1B2A47; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
