@@ -1193,5 +1193,32 @@ function ensureOv(){if(!document.documentElement.contains(ov))document.documentE
   ensure();setInterval(ensure,1500);
 })();
 </script>
+<script>
+/* DiveArts OS - mobile nav drawer + stack (phone only, <=640px): sidebar->hamburger off-canvas, cards stack, full-width content */
+(function(){
+  if(window.__osMnav)return; window.__osMnav=1;
+  var CSS=[
+   '@media (max-width:640px){',
+   'aside{position:fixed !important;top:0;bottom:0;left:0;width:270px;max-width:82vw;z-index:4000;transform:translateX(-100%);transition:transform .25s ease;box-shadow:2px 0 22px rgba(0,0,0,.5);overflow-y:auto}',
+   'body.os-navopen aside{transform:translateX(0)}',
+   'aside + div{width:100% !important;min-width:0 !important}',
+   'aside + div > header{flex-wrap:wrap;gap:8px;padding-left:54px !important}',
+   'aside + div [style*="grid-template-columns"]{grid-template-columns:1fr !important}',
+   '#os-ham{display:flex !important}',
+   'body.os-navopen #os-backdrop{display:block}',
+   '}',
+   '#os-ham{display:none;position:fixed;top:12px;left:12px;z-index:4200;width:42px;height:42px;border-radius:11px;background:#0C2A3A;color:#C79A3B;border:none;align-items:center;justify-content:center;font-size:21px;line-height:1;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.35)}',
+   '#os-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3900}'
+  ].join('');
+  function ensure(){try{
+    var h=document.head||document.documentElement;
+    if(!document.getElementById('os-mnav-css')){var st=document.createElement('style');st.id='os-mnav-css';st.textContent=CSS;h.appendChild(st);}
+    if(!document.getElementById('os-ham')){var b=document.createElement('button');b.id='os-ham';b.type='button';b.innerHTML='&#9776;';b.setAttribute('aria-label','Menu');b.onclick=function(e){e.preventDefault();e.stopPropagation();document.body.classList.toggle('os-navopen');};document.body.appendChild(b);}
+    if(!document.getElementById('os-backdrop')){var bd=document.createElement('div');bd.id='os-backdrop';bd.onclick=function(){document.body.classList.remove('os-navopen');};document.body.appendChild(bd);}
+  }catch(e){}}
+  document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('aside a'):null;if(a){document.body.classList.remove('os-navopen');}},true);
+  ensure();setInterval(ensure,1500);
+})();
+</script>
 </body>
 </html>
