@@ -1031,18 +1031,19 @@ function ensureOv(){if(!document.body.contains(ov))document.body.appendChild(ov)
       if(el.children.length>1)continue;
       var tx=(el.textContent||'').trim();
       if(tx.length<3||tx.length>60)continue;
+      if(tx===tx.toUpperCase())continue;
       var id=chiefOf(tx);
       if(!id)continue;
       el.setAttribute('data-oscc','1');
       var bt=document.createElement('button');
       bt.textContent='💬 Chat';
       bt.setAttribute('data-oscc-btn','1');
+      bt.setAttribute('data-chief',id);
       bt.style.cssText='margin-left:10px;border:none;background:#C79A3B;color:#0C2A3A;border-radius:14px;padding:3px 11px;font:700 11px Lato,sans-serif;cursor:pointer;vertical-align:middle';
-      bt.onclick=(function(cid){return function(e){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();if(window.__osChiefChat)window.__osChiefChat(cid);};})(id);
       el.appendChild(bt);
     }
   }
-  document.addEventListener('click',function(e){var n=e.target&&e.target.closest?e.target.closest('[data-oscc-btn]'):null;if(n){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();}},true);
+  document.addEventListener('click',function(e){var n=e.target&&e.target.closest?e.target.closest('[data-oscc-btn]'):null;if(n){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();if(window.__osChiefChat)window.__osChiefChat(n.getAttribute('data-chief'));}},true);
   scan();setInterval(scan,1000);
 })();
 </script>
