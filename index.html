@@ -817,6 +817,165 @@ window.__dcPushChange = function(pc){
   document.addEventListener('click',function(e){var n=e.target&&e.target.closest?e.target.closest('#os-bd-nav'):null;if(n){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();openOv();}},true);function __bdtick(){try{ensureNav();ensureOv();}catch(e){}}__bdtick();setInterval(__bdtick,800);
 })();
 </script>
+<script>
+/* DiveArts OS - Refresh pill (manual on-demand data pull, no auto-polling) */
+(function(){
+  if(window.__osRefresh)return; window.__osRefresh=1;
+  var st=document.createElement('style');
+  st.textContent='#os-refresh{position:fixed;left:16px;bottom:16px;z-index:2147483200;display:flex;align-items:center;gap:8px;background:#0C2A3A;color:#EFE8DA;border:1px solid #C79A3B;border-radius:24px;padding:9px 15px;font:700 12.5px Lato,-apple-system,sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(12,42,58,.25)}#os-refresh:hover{background:#12384c}#os-refresh .ri{font-size:15px;line-height:1}';
+  var b=document.createElement('button');b.id='os-refresh';b.type='button';
+  b.innerHTML='<span class="ri">⟳</span><span>Refresh data</span>';
+  b.onclick=function(e){e.preventDefault();e.stopPropagation();b.querySelector('span:last-child').textContent='Refreshing…';setTimeout(function(){location.reload();},120);};
+  function ensure(){if(!document.head.contains(st))document.head.appendChild(st);if(!document.body.contains(b))document.body.appendChild(b);}
+  ensure();setInterval(ensure,900);
+})();
+</script>
+<script>
+/* DiveArts OS - Chiefs Check-in left-nav tab (proactive: assess + suggest + get-to-know-you, files to Befa Profile) */
+(function(){
+  if(window.__osChiefs)return; window.__osChiefs=1;
+  var PROFILE='https://hook.eu1.make.com/s5bjxqgy498wugfnxeciaak5amf3s55d';
+  var DOC='https://docs.google.com/document/d/1fqarJOpzWkUjz_po5o2yYvKkZxhoe1SvLTeVtn1vQK0/edit';
+  var CH=[
+   {id:'coo',name:'Operations',sub:'COO · the whole picture',ic:'O',cards:[
+     {as:"Jakarta and Bali both run on freelancers, and you are the single point connecting them. Right now your calendar is the bottleneck, not your cash.",
+      sg:"Block a recurring 20-minute Friday ops triage so coordination stops living in scattered DMs.",
+      q:"When a week goes sideways, what is the first thing you let drop — and what do you refuse to drop no matter what?"},
+     {as:"Most of what keeps DiveArts running is in your head, not written down. That is fast today and fragile tomorrow.",
+      sg:"Pick one recurring task only you can do, and let a chief draft the steps so someone else could run it.",
+      q:"Which part of the operation would fall apart first if you took two weeks fully offline?"},
+     {as:"You move between teacher, designer, and CEO in the same day. Context-switching is a hidden tax on your energy.",
+      sg:"Batch same-type work into blocks (all teaching, all admin) instead of interleaving it.",
+      q:"Which of your roles gives you energy, and which one quietly drains it?"}]},
+   {id:'cx',name:'Customer Experience',sub:'Hanayah · WhatsApp replies',ic:'C',cards:[
+     {as:"Hanayah drafts and you approve. That approval step is where your time goes — and where trust is won or lost.",
+      sg:"Note the three questions customers ask most; pre-approve a warm default reply for each so you approve faster.",
+      q:"When you read a reply Hanayah drafted, what makes you think this sounds like me versus this is not how I talk?"},
+     {as:"Speed and warmth win mermaid customers more than perfect wording. A fast, kind reply beats a slow flawless one.",
+      sg:"Decide a response-time promise you are proud of (say, within a few hours in work time) and let CX protect it.",
+      q:"What is the feeling you most want a customer to have after messaging Sea Diva?"},
+     {as:"The hardest messages are the emotional ones — nervous first-timers, worried parents, custom-fit anxieties.",
+      sg:"Flag emotional messages for your personal touch and let the agent handle the routine ones.",
+      q:"Which kind of customer message do you always want to answer yourself, never an agent?"}]},
+   {id:'sales',name:'Sales',sub:'Conversions & pipeline',ic:'S',cards:[
+     {as:"Tails convert on trust and fit. A customer buys when they can picture themselves in a finished tail.",
+      sg:"Keep two or three finished-tail stories ready to send — real customers, real transformations.",
+      q:"When someone is on the fence about a custom tail, what is the one thing that usually tips them to yes?"},
+     {as:"Discounting is a reflex under pressure. Your rules cap it at 10 percent for a reason — protect the brand.",
+      sg:"Before offering a discount, try offering more value (a add-on, faster slot) instead of a lower price.",
+      q:"How do you feel about discounting — a useful tool, or something that quietly cheapens the work?"},
+     {as:"Not every lead deserves equal energy. Your time is the scarce resource, not the leads.",
+      sg:"Each week, name the two or three customers most worth your personal attention and give the rest to the pipeline.",
+      q:"What does your dream customer look like — the one you wish you had ten more of?"}]},
+   {id:'mkt',name:'Marketing',sub:'Content & brand',ic:'M',cards:[
+     {as:"Your content engine is Beben editing and Ryan and Adhi shooting. Consistency beats polish on the feed.",
+      sg:"Pick one repeatable format you can post weekly without reinventing it each time.",
+      q:"Which piece of content you have made are you proudest of — and why did it feel like you?"},
+     {as:"You have footage most brands would envy. The gap is rhythm, not raw material.",
+      sg:"Batch a month of captions in one sitting so posting never waits on writing.",
+      q:"What part of making content lights you up, and what part do you dread and would happily hand off?"},
+     {as:"Your brand voice is warm-expert, no hard selling. That is rare and worth guarding as you scale.",
+      sg:"Write down three words your brand always is and two it never is, so any editor can stay on-voice.",
+      q:"If Sea Diva were a person at a party, how would they talk — and what would they never say?"}]},
+   {id:'prod',name:'Productions',sub:'Shows, competitions, shows',ic:'P',cards:[
+     {as:"Shows and competitions are your brand heartbeat and your least systematized area — each one is rebuilt from scratch.",
+      sg:"Turn your last show into a reusable checklist so the next one starts at 60 percent done.",
+      q:"What makes a show feel like a success to you — the crowd, the art, the revenue, or something else?"},
+     {as:"Productions pull in your best talent and your most energy. They are high-reward and high-drain.",
+      sg:"Before saying yes to the next event, decide what it must give back to be worth your team energy.",
+      q:"Which type of production do you most want DiveArts known for three years from now?"},
+     {as:"Competitions like DXI build reputation that marketing cannot buy. They are an investment, not a cost.",
+      sg:"Track one reputation win from each event (press, a partner, a hire) so their value is visible.",
+      q:"What is the creative ambition you have not done yet but really want to stage?"}]},
+   {id:'fin',name:'Finance',sub:'Cash, pricing, margins',ic:'F',cards:[
+     {as:"Your cash is seasonal and installment-heavy. The real risk is timing — money in versus money out — not margin.",
+      sg:"Keep a simple runway number (weeks of cash) visible so decisions are made with eyes open.",
+      q:"How many months of cushion lets you sleep well — and when it dips below that, what do you do?"},
+     {as:"Purchases over Rp50k route to you and discounts cap at 10 percent. Those guardrails protect you from busy-day mistakes.",
+      sg:"Review the guardrails once a quarter so they still fit the size you are now, not the size you were.",
+      q:"When you spend on the business, what kind of expense feels worth it versus what feels like a leak?"},
+     {as:"Pricing carries your worth. Underpricing custom work is the most common quiet mistake in craft businesses.",
+      sg:"For each product, know its true cost and floor price so you never quote below it under pressure.",
+      q:"What is your honest gut feeling about your prices — too low, about right, or something you avoid thinking about?"}]},
+   {id:'bd',name:'Business Development',sub:'Outreach & partnerships',ic:'B',cards:[
+     {as:"Outreach is a pipeline of warm mermaid relationships. Follow-up stamina, not lead volume, is your constraint.",
+      sg:"Commit to a small weekly follow-up number you can always hit, rather than big bursts that fade.",
+      q:"What kind of partnership would genuinely excite you — the one you would drop other things for?"},
+     {as:"Schools, venues, and shows each move at a different pace. Treating them the same slows the fast ones.",
+      sg:"Sort prospects by how ready they are, and give the warm ones your energy first.",
+      q:"Who is a dream client or venue you have not approached yet — and what is holding you back?"},
+     {as:"Your best outreach sounds like you, not a script. That is your edge over bigger, colder competitors.",
+      sg:"Keep one or two opening lines that feel unmistakably you, and reuse them.",
+      q:"When you reach out to someone new, what do you want them to feel about DiveArts in the first message?"}]}
+  ];
+  function lsGet(){try{return JSON.parse(localStorage.getItem('os_profile')||'[]');}catch(e){return[];}}
+  function lsAdd(o){var a=lsGet();a.unshift(o);localStorage.setItem('os_profile',JSON.stringify(a));}
+  function idxOf(id){var n=parseInt(localStorage.getItem('os_ci_'+id)||'0',10);return isNaN(n)?0:n;}
+  function bump(id){localStorage.setItem('os_ci_'+id,(idxOf(id)+1));}
+  function countFor(id){return lsGet().filter(function(e){return e.cid===id;}).length;}
+
+  var st=document.createElement('style');
+  st.textContent='#os-ci-ov{position:fixed;inset:0;z-index:2147483290;background:#FBF8F1;color:#0C2A3A;font-family:Lato,-apple-system,sans-serif;display:none;flex-direction:column}#os-ci-ov *{box-sizing:border-box}#os-ci-ov .top{flex:0 0 auto;display:flex;align-items:center;gap:14px;padding:16px 26px;background:#0C2A3A;color:#EFE8DA}#os-ci-ov .top h1{font-family:Georgia,serif;font-size:20px;margin:0}#os-ci-ov .top .sy{font-size:11.5px;color:#B9C4CC;margin-top:2px}#os-ci-ov .top .sp{flex:1}#os-ci-ov .top button{border:1px solid #C79A3B;background:transparent;color:#EFE8DA;border-radius:20px;padding:7px 14px;font:700 12.5px Lato,sans-serif;cursor:pointer;margin-left:8px}#os-ci-ov .top button.x{border-color:#5A6b74;font-size:18px;padding:2px 12px}#os-ci-ov .bd{flex:1;overflow:auto;padding:22px 26px 80px}#os-ci-ov .wrap{max-width:1000px;margin:0 auto}#os-ci-ov .lead{font-size:14px;color:#44606e;margin:0 0 20px}#os-ci-ov .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}#os-ci-ov .card{background:#fff;border:1px solid #E7DFCF;border-radius:14px;padding:17px 18px;display:flex;flex-direction:column;gap:9px}#os-ci-ov .card .hd{display:flex;align-items:center;gap:11px}#os-ci-ov .ic{width:38px;height:38px;border-radius:10px;background:#0C2A3A;color:#C79A3B;font:700 17px Georgia,serif;display:flex;align-items:center;justify-content:center;flex:0 0 auto}#os-ci-ov .card .nm{font:700 15px Lato,sans-serif}#os-ci-ov .card .rl{font-size:11.5px;color:#7d8a91}#os-ci-ov .card .cnt{font-size:11.5px;color:#9a7b2e;font-weight:700}#os-ci-ov .btn{border:none;background:#C79A3B;color:#0C2A3A;border-radius:22px;padding:9px 15px;font:700 12.5px Lato,sans-serif;cursor:pointer;align-self:flex-start}#os-ci-ov .btn.gh{background:transparent;border:1px solid #C79A3B;color:#8a6a20}#os-ci-ov .sess{background:#fff;border:1px solid #E7DFCF;border-radius:16px;padding:22px 22px;max-width:720px;margin:0 auto}#os-ci-ov .sess .who{display:flex;align-items:center;gap:12px;margin-bottom:16px}#os-ci-ov .sess .who .nm{font:700 18px Georgia,serif}#os-ci-ov .lab{font:700 11px Lato,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#a98b3d;margin:16px 0 5px}#os-ci-ov .val{font-size:14.5px;line-height:1.5}#os-ci-ov .val.q{font-size:16px;font-weight:700;color:#0C2A3A}#os-ci-ov textarea{width:100%;min-height:96px;border:1px solid #cdbf9e;border-radius:11px;padding:11px 12px;font:400 14px Lato,sans-serif;margin-top:8px;resize:vertical}#os-ci-ov .row{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}#os-ci-ov .saved{color:#1c7a3e;font-weight:700;font-size:13px}#os-ci-ov .hist{margin-top:20px;border-top:1px solid #eee4cf;padding-top:14px}#os-ci-ov .hist h3{font:700 12px Lato,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8a97a0;margin:0 0 10px}#os-ci-ov .he{margin-bottom:12px}#os-ci-ov .he .hq{font-size:13px;font-weight:700}#os-ci-ov .he .ha{font-size:13.5px;color:#3f5964}#os-ci-ov .he .hd2{font-size:11px;color:#a3aeb4}#os-ci-ov .muted{color:#8a97a0;font-size:13px}';
+
+  var ov=document.createElement('div');ov.id='os-ci-ov';
+  ov.innerHTML='<div class="top"><div><h1>Chiefs Check-in</h1><div class="sy" id="os-ci-sy">Each chief gives you one read, one suggestion, one question — your answers grow your profile.</div></div><div class="sp"></div><button class="gold" id="os-ci-doc">Open my profile doc</button><button class="x" id="os-ci-x">×</button></div><div class="bd"><div class="wrap" id="os-ci-body"></div></div>';
+
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function home(){
+    var w=document.getElementById('os-ci-body');
+    var h='<p class="lead">Your chiefs check in on demand — nothing runs on a schedule. Pick one when you have a quiet minute. Each check-in files what you share into your Befa Profile so every agent keeps learning how you think.</p><div class="grid">';
+    CH.forEach(function(c){h+='<div class="card"><div class="hd"><div class="ic">'+esc(c.ic)+'</div><div><div class="nm">'+esc(c.name)+'</div><div class="rl">'+esc(c.sub)+'</div></div></div><div class="cnt">'+countFor(c.id)+' answered</div><button class="btn" data-ci="'+c.id+'">Run check-in</button></div>';});
+    h+='</div>';w.innerHTML=h;
+    [].slice.call(w.querySelectorAll('button[data-ci]')).forEach(function(b){b.onclick=function(){sess(b.getAttribute('data-ci'));};});
+  }
+  function sess(id){
+    var c=null;for(var i=0;i<CH.length;i++){if(CH[i].id===id)c=CH[i];}if(!c)return;
+    var card=c.cards[idxOf(id)%c.cards.length];
+    var w=document.getElementById('os-ci-body');
+    var h='<div class="sess"><div class="who"><div class="ic">'+esc(c.ic)+'</div><div><div class="nm">'+esc(c.name)+' chief</div><div class="rl" style="font-size:12px;color:#7d8a91">'+esc(c.sub)+'</div></div></div>';
+    h+='<div class="lab">Assessment</div><div class="val">'+esc(card.as)+'</div>';
+    h+='<div class="lab">Suggestion</div><div class="val">'+esc(card.sg)+'</div>';
+    h+='<div class="lab">A question for you</div><div class="val q">'+esc(card.q)+'</div>';
+    h+='<textarea id="os-ci-ans" placeholder="Type your answer… there are no wrong answers."></textarea>';
+    h+='<div class="row"><button class="btn" id="os-ci-save">Save to my profile</button><button class="btn gh" id="os-ci-back">Back to chiefs</button><span class="saved" id="os-ci-msg"></span></div>';
+    var mine=lsGet().filter(function(e){return e.cid===id;});
+    if(mine.length){h+='<div class="hist"><h3>What this chief has learned about you</h3>';mine.slice(0,8).forEach(function(e){h+='<div class="he"><div class="hq">'+esc(e.q)+'</div><div class="ha">'+esc(e.a)+'</div><div class="hd2">'+esc(e.ts)+'</div></div>';});h+='</div>';}
+    h+='</div>';w.innerHTML=h;
+    document.getElementById('os-ci-back').onclick=home;
+    document.getElementById('os-ci-save').onclick=function(){
+      var ta=document.getElementById('os-ci-ans');var a=(ta.value||'').trim();
+      if(!a){document.getElementById('os-ci-msg').textContent='Write a line first — even a short one.';return;}
+      var now=new Date();var ts=now.getFullYear()+'-'+('0'+(now.getMonth()+1)).slice(-2)+'-'+('0'+now.getDate()).slice(-2)+' '+('0'+now.getHours()).slice(-2)+':'+('0'+now.getMinutes()).slice(-2);
+      lsAdd({cid:id,chief:c.name,q:card.q,a:a,as:card.as,sg:card.sg,ts:ts});
+      bump(id);
+      var msg=document.getElementById('os-ci-msg');msg.textContent='Saving…';
+      var key=sessionStorage.getItem('os_key')||'';
+      var p=new URLSearchParams({action:'save',key:key,ts:ts,chief:c.name,assess:card.as,sugg:card.sg,q:card.q,a:a});
+      fetch(PROFILE+'?'+p.toString(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(){msg.textContent='✓ Filed to your Befa Profile.';}).catch(function(){msg.textContent='✓ Saved on this device (cloud sync will retry).';});
+      setTimeout(function(){sess(id);},1100);
+    };
+  }
+  function ensureOv(){if(!document.body.contains(ov))document.body.appendChild(ov);if(!document.head.contains(st))document.head.appendChild(st);}
+  function openOv(){ensureOv();ov.style.display='flex';home();}
+  window.__osChiefsOpen=openOv;
+  ov.addEventListener('click',function(e){var t=e.target;if(t&&t.id==='os-ci-x'){ov.style.display='none';}if(t&&t.id==='os-ci-doc'){window.open(DOC,'_blank');}});
+
+  function ensureNav(){ if(document.getElementById('os-ci-nav'))return;
+    var links=[].slice.call(document.querySelectorAll('aside a'));if(!links.length)links=[].slice.call(document.querySelectorAll('nav a'));
+    var pc=null;for(var i=0;i<links.length;i++){if(/pending changes/i.test(links[i].textContent)){pc=links[i];break;}}
+    if(!pc)return;
+    var item=pc.cloneNode(true);item.id='os-ci-nav';item.style.cursor='pointer';
+    var alln=[item].concat([].slice.call(item.querySelectorAll('*')));alln.forEach(function(n){[].slice.call(n.attributes||[]).forEach(function(a){if(/^sc-/.test(a.name)||a.name==='href'||a.name==='title')n.removeAttribute(a.name);});});
+    var spans=item.querySelectorAll('span');
+    spans.forEach(function(sp){if(sp.children.length===0){var t=sp.textContent.trim();if(t==='P')sp.textContent='C';else if(/pending changes/i.test(t))sp.textContent='Chiefs Check-in';else if(/^\d+$/.test(t))sp.remove();}});
+    item.onclick=function(e){e.preventDefault();e.stopPropagation();openOv();};
+    pc.parentNode.insertBefore(item,pc.nextSibling);
+  }
+  document.addEventListener('click',function(e){var n=e.target&&e.target.closest?e.target.closest('#os-ci-nav'):null;if(n){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();openOv();}},true);
+  function __citick(){try{ensureNav();ensureOv();}catch(e){}}__citick();setInterval(__citick,800);
+})();
+</script>
+
 
 </body>
 </html>
