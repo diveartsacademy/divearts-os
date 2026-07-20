@@ -919,7 +919,8 @@ window.__dcPushChange = function(pc){
 
   var CHAT='https://hook.eu1.make.com/3ga58ebevmcuol8c2jjnahrixxeclp1c';
   var DOM={coo:'operations, people, capacity, and keeping Jakarta and Bali coordinated',cx:'customer experience and the WhatsApp CX agent Hanayah',sales:'turning enquiries into tail and course sales',mkt:'content, brand voice, and social',prod:'shows, competitions, and performances',fin:'cash flow, pricing, and margins',bd:'outreach and partnerships with mermaid schools, venues, and shows'};
-  function sysFor(c){return 'You are the '+c.name+' chief inside DiveArts OS, Befa’s AI operating system. You are a warm, sharp, senior leader for '+(DOM[c.id]||c.sub)+'. You report to Befa (Befalia), CEO of the DiveArts ecosystem: DiveArts Academy (mermaid and underwater courses in Jakarta and Bali), Sea Diva Tails (custom fabric mermaid tails made in Bali), TailCraft (B2B manufacturing) and DiveArts Productions (shows and competitions). Talk WITH her like a trusted chief of staff for your area: assess, advise, ask good questions, help her decide. Keep replies concise and practical, a few short paragraphs at most, warm and human, no corporate fluff and no dash punctuation. Hard rules: agents draft and Befa approves; never spend money or send anything on her behalf; never invent prices or numbers (if a price is needed, tell her to check the live catalog); if unsure, say so. You are learning how Befa thinks over time, so when it helps, ask one short get-to-know-you question.';}
+  function memFor(c){try{var a=lsGet().filter(function(e){return e.cid===c.id;}).slice(0,8);if(!a.length)return '';var s=a.map(function(e){return '- Q: '+e.q+' | A: '+e.a;}).join('\n');return '\n\nWhat Befa has already shared with you in past check-ins (reference it naturally, stay consistent, do not repeat it back word for word):\n'+s;}catch(e){return '';}}
+  function sysFor(c){return 'You are the '+c.name+' chief inside DiveArts OS, Befa’s AI operating system. You are a warm, sharp, senior leader for '+(DOM[c.id]||c.sub)+'. You report to Befa (Befalia), CEO of the DiveArts ecosystem: DiveArts Academy (mermaid and underwater courses in Jakarta and Bali), Sea Diva Tails (custom fabric mermaid tails made in Bali), TailCraft (B2B manufacturing) and DiveArts Productions (shows and competitions). Talk WITH her like a trusted chief of staff for your area: assess, advise, ask good questions, help her decide. Keep replies concise and practical, a few short paragraphs at most, warm and human, no corporate fluff and no dash punctuation. Hard rules: agents draft and Befa approves; never spend money or send anything on her behalf; never invent prices or numbers (if a price is needed, tell her to check the live catalog); if unsure, say so. You are learning how Befa thinks over time, so when it helps, ask one short get-to-know-you question.'+memFor(c);}
   function chatKey(id){return 'os_chat_'+id;}
   function getChat(id){try{return JSON.parse(localStorage.getItem(chatKey(id))||'[]');}catch(e){return [];}}
   function saveChat(id,a){localStorage.setItem(chatKey(id),JSON.stringify(a.slice(-40)));}
@@ -988,7 +989,7 @@ window.__dcPushChange = function(pc){
 
 function ensureOv(){if(!document.body.contains(ov))document.body.appendChild(ov);if(!document.head.contains(st))document.head.appendChild(st);}
   function openOv(){ensureOv();ov.style.display='flex';home();}
-  window.__osChiefsOpen=openOv;
+  window.__osChiefsOpen=openOv;window.__osChiefChat=function(id){ensureOv();ov.style.display='flex';chat(id);};
   ov.addEventListener('click',function(e){var t=e.target;if(t&&t.id==='os-ci-x'){ov.style.display='none';}if(t&&t.id==='os-ci-doc'){window.open(DOC,'_blank');}});
 
   function ensureNav(){ if(document.getElementById('os-ci-nav'))return;
@@ -1006,6 +1007,46 @@ function ensureOv(){if(!document.body.contains(ov))document.body.appendChild(ov)
   function __citick(){try{ensureNav();updateNavBadge();ensureOv();}catch(e){}}__citick();setInterval(__citick,800);
 })();
 </script>
+<script>
+/* DiveArts OS - Agent Control Center: Chat button on chief/manager cards */
+(function(){
+  if(window.__osAccChat)return; window.__osAccChat=1;
+  function chiefOf(t){t=(t||'').toLowerCase();
+    if(t.indexOf('orchestrator')>=0)return 'coo';
+    if(t.indexOf('manager')<0)return null;
+    if(t.indexOf('business development')>=0)return 'bd';
+    if(t.indexOf('customer')>=0||t.indexOf('experience')>=0||/\bcx\b/.test(t))return 'cx';
+    if(t.indexOf('sales')>=0)return 'sales';
+    if(t.indexOf('marketing')>=0)return 'mkt';
+    if(t.indexOf('production')>=0||t.indexOf('performance')>=0)return 'prod';
+    if(t.indexOf('finance')>=0||t.indexOf('financial')>=0)return 'fin';
+    if(t.indexOf('operation')>=0)return 'coo';
+    return null;
+  }
+  function scan(){
+    if(!window.__osChiefChat)return;
+    var els=document.querySelectorAll('h1,h2,h3,h4,strong,b,div,span');
+    for(var i=0;i<els.length;i++){var el=els[i];
+      if(el.getAttribute&&el.getAttribute('data-oscc'))continue;
+      if(el.children.length>1)continue;
+      var tx=(el.textContent||'').trim();
+      if(tx.length<3||tx.length>60)continue;
+      var id=chiefOf(tx);
+      if(!id)continue;
+      el.setAttribute('data-oscc','1');
+      var bt=document.createElement('button');
+      bt.textContent='💬 Chat';
+      bt.setAttribute('data-oscc-btn','1');
+      bt.style.cssText='margin-left:10px;border:none;background:#C79A3B;color:#0C2A3A;border-radius:14px;padding:3px 11px;font:700 11px Lato,sans-serif;cursor:pointer;vertical-align:middle';
+      bt.onclick=(function(cid){return function(e){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();if(window.__osChiefChat)window.__osChiefChat(cid);};})(id);
+      el.appendChild(bt);
+    }
+  }
+  document.addEventListener('click',function(e){var n=e.target&&e.target.closest?e.target.closest('[data-oscc-btn]'):null;if(n){e.preventDefault();e.stopPropagation();if(e.stopImmediatePropagation)e.stopImmediatePropagation();}},true);
+  scan();setInterval(scan,1000);
+})();
+</script>
+
 
 
 </body>
