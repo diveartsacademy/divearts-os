@@ -1175,5 +1175,23 @@ function ensureOv(){if(!document.documentElement.contains(ov))document.documentE
 
 
 
+<script>
+/* DiveArts OS - PWA head ensure (bundle resets <head>; re-add iOS home-screen tags + mobile CSS + title) */
+(function(){
+  if(window.__osPWA)return; window.__osPWA=1;
+  var METAS=[['apple-mobile-web-app-capable','yes'],['mobile-web-app-capable','yes'],['apple-mobile-web-app-status-bar-style','black-translucent'],['apple-mobile-web-app-title','DiveArts OS'],['theme-color','#0C2A3A']];
+  var CSS='@media (max-width:640px){#os-cp-ov .hd{padding:10px 12px;gap:8px}#os-cp-ov .hd .t{font-size:16px}#os-cp-ov .tabs{margin-left:6px;gap:6px}#os-cp-ov .tb{padding:5px 10px;font-size:11.5px}#os-cp-ov .body{flex-direction:column;min-height:0}#os-cp-ov .rail{width:100%;height:auto;max-height:120px;border-right:none;border-bottom:1px solid #E2D9C4;display:flex;flex-wrap:nowrap;overflow-x:auto;gap:6px;align-items:center;padding:8px 10px}#os-cp-ov .nw{width:auto;margin:0;white-space:nowrap;flex:none;padding:9px 12px}#os-cp-ov .ci{flex:none;max-width:180px;margin:0}#os-cp-ov .wrap{padding:14px}#os-cp-ov .bub{max-width:90%}#os-cp-ov .foot{padding:10px 12px}#os-cp-ov .fin{gap:8px}#os-cp-ov .analysis,#os-cp-ov .ecard,#os-cp-ov .in{max-width:100%}#os-ci-ov .in,#os-acc .in{max-width:100% !important}#os-acc .cd.sub{margin-left:12px}}';
+  function ensure(){try{
+    var h=document.head||document.documentElement;
+    if(document.title!=='DiveArts OS')document.title='DiveArts OS';
+    METAS.forEach(function(m){if(!document.querySelector('meta[name="'+m[0]+'"]')){var e=document.createElement('meta');e.setAttribute('name',m[0]);e.setAttribute('content',m[1]);h.appendChild(e);}});
+    if(!document.querySelector('meta[name="viewport"][data-os]')){var vp=document.querySelector('meta[name="viewport"]');if(!vp){vp=document.createElement('meta');vp.setAttribute('name','viewport');h.appendChild(vp);}vp.setAttribute('content','width=device-width, initial-scale=1, viewport-fit=cover');vp.setAttribute('data-os','1');}
+    if(!document.querySelector('link[rel="apple-touch-icon"]')){var a=document.createElement('link');a.rel='apple-touch-icon';a.href='icon-180.png';h.appendChild(a);}
+    if(!document.querySelector('link[rel="manifest"]')){var mf=document.createElement('link');mf.rel='manifest';mf.href='manifest.json';h.appendChild(mf);}
+    if(!document.getElementById('os-mobile-css')){var st=document.createElement('style');st.id='os-mobile-css';st.textContent=CSS;h.appendChild(st);}
+  }catch(e){}}
+  ensure();setInterval(ensure,1500);
+})();
+</script>
 </body>
 </html>
