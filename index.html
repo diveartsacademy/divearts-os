@@ -1220,5 +1220,47 @@ function ensureOv(){if(!document.documentElement.contains(ov))document.documentE
   ensure();setInterval(ensure,1500);
 })();
 </script>
+<script>
+/* DiveArts OS - UX cleanup: hide Pending Changes nav + Agents/Hanayah floating buttons; Hanayah on/off moved into Agent Control Center; injected overlays dock beside the menu + auto-switch on nav tap (no X needed) */
+(function(){
+  if(window.__osUX)return; window.__osUX=1;
+  var CC='https://hook.eu1.make.com/9121dpkpp16paxpcfpr7olc5p1pxe3sh';
+  var OVS=['os-acc','os-cp-ov','os-ci-ov','os-bd-ov'];
+  var st=document.createElement('style');
+  st.textContent=[
+    '#os-acc-btn,#os-agent-chip{display:none !important}',
+    '@media (min-width:641px){#os-acc,#os-cp-ov,#os-ci-ov,#os-bd-ov{left:250px !important}}',
+    '#os-acc .hd .os-hana{margin-left:auto;display:inline-flex;align-items:center;gap:8px;background:#0C2A3A;border:1px solid #C79A3B;color:#fff;border-radius:20px;padding:7px 14px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:Lato,sans-serif;white-space:nowrap}',
+    '#os-acc .hd .os-hana .dot{width:9px;height:9px;border-radius:50%;background:#3FA34D;flex:none}',
+    '#os-acc .hd .os-hana.off .dot{background:#8A2E2E}'
+  ].join('');
+  (document.head||document.documentElement).appendChild(st);
+  function closeOverlay(id){var e=document.getElementById(id);if(!e)return;if(id==='os-acc'){e.classList.remove('open');}else{e.style.display='none';}}
+  function closeAllExcept(keep){OVS.forEach(function(id){if(id!==keep)closeOverlay(id);});}
+  document.addEventListener('click',function(ev){
+    var a=ev.target&&ev.target.closest?ev.target.closest('aside a'):null;if(!a)return;
+    var id=a.id,keep=null,t=(a.textContent||'').toLowerCase();
+    if(id==='os-cp-nav')keep='os-cp-ov';
+    else if(id==='os-ci-nav')keep='os-ci-ov';
+    else if(id==='os-bd-nav')keep='os-bd-ov';
+    else if(t.indexOf('agent control center')>=0)keep='os-acc';
+    setTimeout(function(){closeAllExcept(keep);},40);
+  },true);
+  function hanaLabel(b){var en=localStorage.getItem('os_enabled')!=='false';b.className='os-hana'+(en?'':' off');b.innerHTML='<span class="dot"></span>Hanayah (CX): '+(en?'ON':'OFF');}
+  function ensure(){try{
+    [].slice.call(document.querySelectorAll('aside a')).forEach(function(a){if(/pending changes/i.test(a.textContent)){a.style.display='none';}});
+    var hd=document.querySelector('#os-acc .hd');
+    if(hd){
+      var ex=hd.querySelector('.os-hana');
+      if(!ex){
+        var b=document.createElement('button');b.type='button';hanaLabel(b);
+        b.onclick=function(e){e.stopPropagation();var en=localStorage.getItem('os_enabled')!=='false';var next=!en;if(!confirm('Turn Hanayah '+(next?'ON':'OFF')+'? This takes effect immediately for all customers.'))return;fetch(CC+'?action=toggle&enabled='+next).then(function(r){return r.json();}).then(function(){localStorage.setItem('os_enabled',String(next));hanaLabel(b);}).catch(function(){alert('Could not reach the automation layer. Try again.');});};
+        if(hd.lastElementChild)hd.insertBefore(b,hd.lastElementChild);else hd.appendChild(b);
+      }else{hanaLabel(ex);}
+    }
+  }catch(e){}}
+  ensure();setInterval(ensure,1000);
+})();
+</script>
 </body>
 </html>
