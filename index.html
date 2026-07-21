@@ -1231,7 +1231,8 @@ function ensureOv(){if(!document.documentElement.contains(ov))document.documentE
     '@media (min-width:641px){#os-acc,#os-cp-ov,#os-ci-ov,#os-bd-ov{left:250px !important}}',
     '.os-hana{margin-left:auto;display:inline-flex;align-items:center;gap:8px;background:#0C2A3A;border:1px solid #C79A3B;color:#fff;border-radius:20px;padding:7px 14px;font-size:12.5px;font-weight:800;cursor:pointer;font-family:Lato,sans-serif;white-space:nowrap}',
     '.os-hana .dot{width:9px;height:9px;border-radius:50%;background:#3FA34D;flex:none}',
-    '.os-hana.off .dot{background:#8A2E2E}'
+    '.os-hana.off .dot{background:#8A2E2E}',
+    '#os-hana-fixed{position:fixed;top:14px;right:20px;z-index:2147483646;display:none}'
   ].join('');
   function closeOverlay(id){var e=document.getElementById(id);if(!e)return;if(id==='os-acc'){e.classList.remove('open');}else{e.style.display='none';}}
   function closeAllExcept(keep){OVS.forEach(function(id){if(id!==keep)closeOverlay(id);});}
@@ -1248,16 +1249,15 @@ function ensureOv(){if(!document.documentElement.contains(ov))document.documentE
   function ensure(){try{
     if(!document.getElementById('os-ux-css')){var cs=document.createElement('style');cs.id='os-ux-css';cs.textContent=UXCSS;(document.head||document.documentElement).appendChild(cs);}
     [].slice.call(document.querySelectorAll('aside a')).forEach(function(a){if(/pending changes/i.test(a.textContent)){a.style.display='none';}});
-    var pill=[].slice.call(document.querySelectorAll('button,div,span')).filter(function(e){return /^Agents & framework$/i.test((e.textContent||'').trim()) && !(e.closest&&e.closest('aside')) && e.getClientRects().length;})[0];
-    var row=pill?pill.parentElement:null;
-    if(row){
-      var ex=row.querySelector('.os-hana');
-      if(!ex){
-        var b=document.createElement('button');b.type='button';hanaLabel(b);
-        b.onclick=function(e){e.stopPropagation();var en=localStorage.getItem('os_enabled')!=='false';var next=!en;if(!confirm('Turn Hanayah '+(next?'ON':'OFF')+'? This takes effect immediately for all customers.'))return;fetch(CC+'?action=toggle&enabled='+next).then(function(r){return r.json();}).then(function(){localStorage.setItem('os_enabled',String(next));hanaLabel(b);}).catch(function(){alert('Could not reach the automation layer. Try again.');});};
-        row.appendChild(b);
-      }else{hanaLabel(ex);}
+    var accActive=[].slice.call(document.querySelectorAll('button,div,span')).some(function(e){return /^Agents & framework$/i.test((e.textContent||'').trim()) && !(e.closest&&e.closest('aside')) && e.getClientRects().length;});
+    var hf=document.getElementById('os-hana-fixed');
+    if(!hf){
+      hf=document.createElement('button');hf.id='os-hana-fixed';hf.type='button';
+      hf.onclick=function(e){e.stopPropagation();var en=localStorage.getItem('os_enabled')!=='false';var next=!en;if(!confirm('Turn Hanayah '+(next?'ON':'OFF')+'? This takes effect immediately for all customers.'))return;fetch(CC+'?action=toggle&enabled='+next).then(function(r){return r.json();}).then(function(){localStorage.setItem('os_enabled',String(next));hanaLabel(hf);}).catch(function(){alert('Could not reach the automation layer. Try again.');});};
+      document.body.appendChild(hf);
     }
+    hanaLabel(hf);
+    hf.style.display=accActive?'inline-flex':'none';
   }catch(e){}}
   ensure();setInterval(ensure,1000);
 })();
